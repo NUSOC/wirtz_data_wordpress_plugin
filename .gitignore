@@ -1,0 +1,16 @@
+*.php~
+debug.log
+node_modules/
+.idea/
+PyCharm30/
+venv/
+composer.lock
+composer.json
+build/
+*.log
+*~
+*.orig
+.DS_Store
+.env
+vendor/
+settings.json
