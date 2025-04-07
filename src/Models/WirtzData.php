@@ -47,7 +47,8 @@ class WirtzData
 
 
     /**
-     * Returns the data as an array with column headers, where the first row serves as the keys for a multidimensional array.
+     * Returns the data as an array with column headers, where the first 
+     * row serves as the keys for a multidimensional array.
      *
      * @return array
      */
@@ -77,6 +78,8 @@ class WirtzData
 
         foreach ($data as $row) {
             $tempArray = [];
+            
+            // correct the headers
             foreach ($headers as $key => $header) {
                 if ($header == 'First name') {
                     $header = 'First';
@@ -85,8 +88,26 @@ class WirtzData
                 } elseif ($header == 'Graduation Year') {
                     $header = 'Grad';
                 }
+                
                 $tempArray[$header] = $row[$key];
             }
+
+
+            // adjust the values
+            if(array_key_exists('Career', $tempArray)) {
+                $tempArray['Career'] = str_replace('Undergraduate', 'UG', $tempArray['Career']);
+            } 
+            
+            if(array_key_exists('Grad', $tempArray)) {
+                $tempArray['Grad'] = str_replace('.0', '', $tempArray['Grad']);
+            }
+
+            if(array_key_exists('Year', $tempArray)) {
+                $tempArray['Year'] = trim(str_replace('Season.xlsx', '', $tempArray['Year']));
+            }
+
+
+
             $result[] = $tempArray; // Add each row to the result array
         }
 
