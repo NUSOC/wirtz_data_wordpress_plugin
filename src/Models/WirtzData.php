@@ -112,27 +112,41 @@ class WirtzData
         return array_column($this->getData(), $column);
     }
 
-
+    /**
+     * Get an array of unique Years
+     */
     public function getUniqueYears()
     {
         return $this->getUniqueColumn('Year');
     }
 
+    /**
+     * Get an array of unique Productions
+     */
     public function getUniqueProductions()
     {
         return $this->getUniqueColumn('Production');
     }
 
+    /**
+     * Get an array of unique Productions
+     */
     public function getUniqueTeams()
     {
         return $this->getUniqueColumn('Team');
     }
 
+    /**
+     * Get an array of unique Teams
+     */
     public function getUniqueRoles()
     {
         return $this->getUniqueColumn('Role');
     }
 
+    /**
+     * Get an array of unique Roles
+     */
     public function getRoles()
     {
         return $this->getColumnValues('Role');
@@ -140,6 +154,12 @@ class WirtzData
 
 
 
+    /**
+     * Search for people by first and last name.
+     * @param string $first The first name to search for
+     * @param string $last The last name to search for
+     * @return array An array of matching people
+     */
     public function doSearch($first, $last)
     {
         $first = strtolower($first);
