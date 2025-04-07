@@ -60,6 +60,12 @@ class WirtzData
 
     /**
      * Converts the provided array into a format with column headers.
+     * This function takes the first row of the array as headers and uses 
+     * them as keys for the subsequent rows. It also renames specific headers 
+     * to shorter versions. For example, "First name" becomes "First", 
+     * "Last name" becomes "Last", and "Graduation Year" becomes "Grad".
+     * The function returns a new array where each row is an associative array 
+     * with the headers as keys.
      *
      * @param array $data
      * @return array
