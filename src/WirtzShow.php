@@ -14,14 +14,10 @@ class WirtzShow
 {
     private $twig, $wirtz_env, $wirtz_data;
 
-    public function __construct($wirtz_env)
+    public function __construct()
     {
-        $this->wirtz_env = $wirtz_env;
-        $this->wirtz_data = new WirtzData($wirtz_env);
-
-
-
-
+    
+        $this->wirtz_data = new WirtzData();
 
         // Set up Twig
         $loader = new FilesystemLoader(__DIR__ . '/templates'); // Corrected template path
@@ -30,37 +26,46 @@ class WirtzShow
 
     public function startpoint()
     {
-        // dump($this->wirtz_data->getUniqueYears());
-        // dump($this->wirtz_data->getUniqueProductions());
-        // dump($this->wirtz_data->getData());
 
-        if (is_front_page() || is_home()) {
-            // If on the front page or home page, return an empty string
-            return '';
-        }
+
+     
 
 
 
         if (isset($_GET['first']) && isset($_GET['last'])) {
             $first = wp_kses(trim($_GET['first']), []);
             $last = wp_kses(trim($_GET['last']), []);
-            dump([$first, $last]);
 
-            $people = $this->wirtz_data->doSearch(
-                $first,
-                $last
-            );
-            dump($people);
+            // Check if first and last names are longer than 3 characters
+            if (strlen($first) > 2 || strlen($last) > 2) {
+                $people = $this->wirtz_data->doSearch(
+                    $first,
+                    $last,
+                    wp_kses($_GET['sort'] ?? 'Name', []),
+                );
+            } else {
+                $error_message = "Trouble: First or last names must be longer than two characters";
+                $people = [];
+            }
 
+        // no search terms coming in     
         } else {
             $first = 0;
             $last = 0;
             $people = [];
         }
 
+
+
+
+
         return $this->twig->render(
             'startpoint.html.twig',
             [
+                'sort' => wp_kses(trim($_GET['sort'] ?? ''), []),
+                'first' => $first,
+                'last' => $last,
+                'error'=> $error_message ?? '',
                 'people' => $people,
                 'returnPage' => $currentUrl = "http://" . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'],
             ]

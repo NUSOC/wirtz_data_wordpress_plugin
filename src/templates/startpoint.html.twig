@@ -1,42 +1,85 @@
-<p>
+<style>
+    .error {
+        border: 1px solid #FF0000;
+        /* Red outline */
+        background-color: #FFC080;
+        /* Slightly lighter red background */
+        color: #FF0000;
+        /* Corresponding font color (red) */
+        padding: 1em;
+    }
+
+    input,
+    label,
+    select {
+        font-family: Manrope, sans-serif;
+        font-size: 22px;
+    }
 
 
-<p>
+    tbody {
+        width: 1000px;
+        border: 1px solid red;
+    }
+</style>
 
+
+{% if error %}
+<div class="error">
+    <p>{{ error }}</p>
+</div>
+{% endif %}
 
 <p>
 <form action="{{ returnPage }}" method="get">
-    <input type="text" name="first" placeholder="Search first name" />
-    <input type="text" name="last" placeholder="Search last name" />
-    <input type="submit" value="Submit">
+    <input type="text" name="first"  placeholder="Search first name"
+        aria-label="Search by first name" />
+    <input type="text" name="last" placeholder="Search last name"
+        aria-label="Search by last name" />
+    <br />
+    <label for="sort">Sort By:</label>
+    <select name="sort" id="" aria-live="polite">
+        <option value="name">Name</option>
+        <option value="production">Production</option>
+    </select>
+    <input type="submit" value="Submit" aria-label="Submit the form">
 </form>
+
 
 
 <h2>People</h2>
 <p>There are {{ people|length }} people in the database.</p>
 <table>
 
-        <tr>
-            <th>Name</th>
-            <th>Team</th>
-            <th>Role</th>
-            <th>Grad</th>
-            <th>Career</th>
-            <th>Year</th>
-            <th>Prod</th>
-        </tr>
+    <tr style="background-color: gray;">
+        <th>First</th>
+        <th>Last</th>
+        <th>Team</th>
+        <th>Role</th>
+        <th>Grad</th>
+        <th>Career</th>
+        <th>Year</th>
+        <th>Prod</th>
+    </tr>
 
-        {% for person in people %}
-        <tr>
-            <td>{{ person.First }} {{ person.Last }}</td>
-            <td>{{ person.Team }}</td>
-            <td>{{ person.Role }}</td>
-            <td>{{ person.Grad }}</td>
-            <td>{{ person.Career }}</td>
-            <td>{{ person.Year }}</td>
-            <td>{{ person.Production }}</td>
-        </tr>
-        {% endfor %}
+    {% for person in people %}
+    {% set color = '' %}
+    {% if loop.index0 % 2 == 0 %}
+        {% set color = 'white' %}
+    {% else %}
+        {% set color = 'lightgray' %}
+    {% endif %}
+    <tr style="background-color: {{ color }};">
+        <td>{{ person.First }} </td>
+        <td>{{ person.Last }}</td>
+        <td>{{ person.Team }}</td>
+        <td>{{ person.Role }}</td>
+        <td>{{ person.Grad }}</td>
+        <td>{{ person.Career }}</td>
+        <td>{{ person.Year }}</td>
+        <td>{{ person.Production }}</td>
+    </tr>
+    {% endfor %}
 
 </table>
 

@@ -7,9 +7,8 @@ class WirtzData
 
     private $wirtz_env, $lastest_file, $data;
 
-    public function __construct($wirtz_env)
+    public function __construct()
     {
-        $this->wirtz_env = $wirtz_env;
         $this->lastest_file = $this->latestFile();
         if ($fileHandle = fopen($this->lastest_file, 'r')) {
             $data = array();
@@ -33,7 +32,9 @@ class WirtzData
     {
 
         //TODO: check if folder exists first
-        $files = glob($this->wirtz_env['CSVFOLDER'] . '/*.csv');
+        $files = glob(get_option('csv_folder') . '/*.csv');
+
+        
 
 
         // Sort the files array by modification time in descending order
@@ -187,7 +188,7 @@ class WirtzData
      * @param string $last The last name to search for
      * @return array An array of matching people
      */
-    public function doSearch($first, $last)
+    public function doSearch($first, $last, $sort)
     {
         $first = strtolower($first);
         $last = strtolower($last);
@@ -195,6 +196,23 @@ class WirtzData
         $result = array_filter($this->getData(), function ($row) use ($first, $last) {
             return (stripos($row['First'], $first) !== false && stripos($row['Last'], $last) !== false);
         });
+
+        if ($sort == 'Production') {
+            usort($result, function ($a, $b) {
+                return strcmp($a['Production'], $b['Production']);
+            });
+        } else {
+            usort($result, function ($a, $b) {
+                if (strcasecmp($a['First'], $b['First']) == 0) {
+                    return strcasecmp($a['Last'], $b['Last']);
+                } else {
+                    return strcasecmp($a['First'], $b['First']);
+                }
+            });
+        }
+
+        
+       
 
         return array_values($result); // Re-index the array
     }
