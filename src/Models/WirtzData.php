@@ -34,7 +34,7 @@ class WirtzData
         //TODO: check if folder exists first
         $files = glob(get_option('csv_folder') . '/*.csv');
 
-        
+
 
 
         // Sort the files array by modification time in descending order
@@ -79,7 +79,7 @@ class WirtzData
 
         foreach ($data as $row) {
             $tempArray = [];
-            
+
             // correct the headers
             foreach ($headers as $key => $header) {
                 if ($header == 'First name') {
@@ -89,21 +89,21 @@ class WirtzData
                 } elseif ($header == 'Graduation Year') {
                     $header = 'Grad';
                 }
-                
+
                 $tempArray[$header] = $row[$key];
             }
 
 
             // adjust the values
-            if(array_key_exists('Career', $tempArray)) {
+            if (array_key_exists('Career', $tempArray)) {
                 $tempArray['Career'] = str_replace('Undergraduate', 'UG', $tempArray['Career']);
-            } 
-            
-            if(array_key_exists('Grad', $tempArray)) {
+            }
+
+            if (array_key_exists('Grad', $tempArray)) {
                 $tempArray['Grad'] = str_replace('.0', '', $tempArray['Grad']);
             }
 
-            if(array_key_exists('Year', $tempArray)) {
+            if (array_key_exists('Year', $tempArray)) {
                 $tempArray['Year'] = trim(str_replace('Season.xlsx', '', $tempArray['Year']));
             }
 
@@ -197,22 +197,24 @@ class WirtzData
             return (stripos($row['First'], $first) !== false && stripos($row['Last'], $last) !== false);
         });
 
-        if ($sort == 'Production') {
+        if ($sort == 'production') {
             usort($result, function ($a, $b) {
                 return strcmp($a['Production'], $b['Production']);
             });
+        } elseif ($sort == 'last') {
+            usort($result, function ($a, $b) {
+                return strcmp($a['Year'], $b['Year']);
+            });
+        } elseif ($sort == 'year') {
+            usort($result, function ($a, $b) {
+                return strcmp($a['Year'], $b['Year']);
+            });
         } else {
             usort($result, function ($a, $b) {
-                if (strcasecmp($a['First'], $b['First']) == 0) {
-                    return strcasecmp($a['Last'], $b['Last']);
-                } else {
-                    return strcasecmp($a['First'], $b['First']);
-                }
+                return strcasecmp($a['First'], $b['First']);
             });
         }
 
-        
-       
 
         return array_values($result); // Re-index the array
     }

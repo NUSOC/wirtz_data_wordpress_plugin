@@ -1,5 +1,6 @@
 <?php
 
+
 namespace StackWirtz\WordpressPlugin;
 
 use Illuminate\Database\Capsule\Manager as Capsule;
@@ -12,24 +13,43 @@ use StackWirtz\WordpressPlugin\Models\WirtzData;
 
 class WirtzShow
 {
-    private $twig, $wirtz_env, $wirtz_data;
+    private $twig, $wirtz_data;
 
     public function __construct()
     {
     
         $this->wirtz_data = new WirtzData();
 
+     
+
         // Set up Twig
         $loader = new FilesystemLoader(__DIR__ . '/templates'); // Corrected template path
         $this->twig = new Environment($loader);
+
+        $this->checks();
+    }
+
+
+    public function checks() {
+
+
+        // does get_option('csv_folder') have value
+        if (get_option('csv_folder') == '') {
+            $error_message = "Trouble: No folder set in the settings page.";
+            wp_die($error_message);
+            
+        }
+
+          // is there a list in get_option('allowed_net_id')
+        if (count(explode(',', get_option('allowed_net_id'))) == 1 && get_option('allowed_net_id') == '') {
+            $error_message = "Trouble: No NetIDs set in the settings page.";
+            wp_die($error_message);
+        }
+        
     }
 
     public function startpoint()
     {
-
-
-     
-
 
 
         if (isset($_GET['first']) && isset($_GET['last'])) {

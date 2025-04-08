@@ -52,7 +52,7 @@ function wirtz_data_settings_register() {
     );
     add_settings_field(
         'allowed_net_id', 
-        'ALLOWED NETWORK ID', 
+        'ALLOWED NetIDs', 
         'display_allowed_net_id', 
         'wirtz-data-settings', 
         'wirtz-data-group'
@@ -60,14 +60,12 @@ function wirtz_data_settings_register() {
 }
 add_action('admin_init', 'wirtz_data_settings_register');
 
-// Callback function for CSV Folder setting field
 function display_csv_folder() {
     $value = get_option('csv_folder', '');
-    echo '<input type="text" name="csv_folder" value="' . esc_attr($value) . '" />';
+    echo '<input type="text" name="csv_folder" value="' . esc_attr($value) . '" size="50"/>';
 }
 
-// Callback function for Allowed Network ID setting field
 function display_allowed_net_id() {
     $value = get_option('allowed_net_id', '');
-    echo '<input type="text" name="allowed_net_id" value="' . esc_attr($value) . '" />';
+    echo '<textarea name="allowed_net_id" rows="5" cols="30">' . esc_attr($value) . '</textarea>';
 }
