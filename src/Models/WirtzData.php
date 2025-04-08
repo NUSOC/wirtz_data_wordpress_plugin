@@ -184,6 +184,7 @@ class WirtzData
 
     /**
      * Search for people by first and last name.
+     * 
      * @param string $first The first name to search for
      * @param string $last The last name to search for
      * @return array An array of matching people
