@@ -12,10 +12,10 @@ The WirtzData plugin allows users to interact with a SQLite database through a s
 To use the plugin, simply add the shortcode `[wirtzdata]` to any post or page where you want the data to be displayed.
 
 ## Configuration
-Before using the plugin, ensure that the `.env` file is properly configured with the path to your CSV file collections. The CSV file should NOT be in a web accessible location. It will be read from the file system. The file should contain a line like this:
+Congiure before use.
 
 ```
-CSVFOLDER=/path/to/your/database.sqlite
+wp-admin/admin.php?page=wirtz-data-settings
 ```
 
 ## Uninstallation
