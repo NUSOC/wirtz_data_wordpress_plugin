@@ -1,7 +1,7 @@
 # WirtzData Plugin
 
 ## Description
-The WirtzData plugin allows users to interact with a SQLite database through a simple shortcode. It provides an easy way to retrieve and display data stored in the database.
+The WirtzData plugin allows users to interact with a Wirtz data archive through a simple shortcode. 
 
 ## Installation
 1. Download the plugin files.
