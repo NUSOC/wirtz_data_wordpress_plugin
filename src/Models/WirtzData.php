@@ -32,7 +32,7 @@ class WirtzData
     {
 
         //TODO: check if folder exists first
-        $files = glob(get_option('csv_folder') . '/*.csv');
+        $files = glob(get_option('wirtz_csv_folder') . '/*.csv');
 
 
 
@@ -180,7 +180,34 @@ class WirtzData
         return $this->getColumnValues('Role');
     }
 
+    /**
+     * Retrieves plays from a specific year, sorted by production in descending order.
+     *
+     * @param int $year The year to filter plays for.
+     * @return array An array of plays from the specified year, ordered by production.
+     */
+    public function getPlaysfromYear($year)
+    {
+        // Filter data to include only rows where Year contains the specified year
+        $result = array_filter($this->getData(), function ($row) use ($year) {
+            return (stripos($row['Year'], $year) !== false);
+        });
 
+        // Store unique values of 'Production' in an associative array.
+        $productions = [];
+        foreach ($result as $play) {
+            if (!in_array($play['Production'], $productions)) {
+                $productions[] = $play['Production'];
+            }
+        }
+        // Sort the $productions array based on 'Production' key value in ascending order.
+        usort($productions, function ($a, $b) {
+            return strcmp($a, $b);
+        });
+
+        // Return an array containing unique productions in descending order of production name.
+        return $productions;
+    }
 
     /**
      * Search for people by first and last name.

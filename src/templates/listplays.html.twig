@@ -1,0 +1,31 @@
+<h3>Productions by Year {{  currentyear }}</h3>
+
+
+
+{% if currentyear is not null %}    
+
+<ul>
+    {% for play in plays %}
+        <li>
+            {{ play }}
+        </li>
+    {% endfor %}
+</ul>
+
+{% endif %}
+
+
+
+<form action="{{returnPage}}" method="get">
+
+    <label for="currentyear">Select Year:</label>
+    <select name="currentyear">
+        {% for year in years %}
+        <option value="{{ year }}" {% if year == currentyear %} selected {% endif %}>{{ year }}</option>
+        {% endfor %}
+    </select>
+
+    <input type="submit" value="Submit" aria-label="Submit the form">
+
+</form>
+

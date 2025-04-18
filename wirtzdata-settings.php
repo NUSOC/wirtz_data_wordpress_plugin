@@ -31,8 +31,8 @@ function wirtz_data_settings_html() {
 // Register settings, sections, and fields
 function wirtz_data_settings_register() {
     // Register settings
-    register_setting('wirtz-data-group', 'csv_folder');
-    register_setting('wirtz-data-group', 'allowed_net_id');
+    register_setting('wirtz-data-group', 'wirtz_csv_folder');
+    register_setting('wirtz-data-group', 'wirtz_allowed_net_id');
 
     // Add settings section
     add_settings_section(
@@ -44,28 +44,28 @@ function wirtz_data_settings_register() {
 
     // Add settings fields
     add_settings_field(
-        'csv_folder', 
+        'wirtz_csv_folder', 
         'CSV FOLDER', 
-        'display_csv_folder', 
+        'display_wirtz_csv_folder', 
         'wirtz-data-settings', 
         'wirtz-data-group'
     );
     add_settings_field(
-        'allowed_net_id', 
+        'wirtz_allowed_net_id', 
         'ALLOWED NetIDs', 
-        'display_allowed_net_id', 
+        'display_wirtz_allowed_net_id', 
         'wirtz-data-settings', 
         'wirtz-data-group'
     );
 }
 add_action('admin_init', 'wirtz_data_settings_register');
 
-function display_csv_folder() {
-    $value = get_option('csv_folder', '');
-    echo '<input type="text" name="csv_folder" value="' . esc_attr($value) . '" size="50"/>';
+function display_wirtz_csv_folder() {
+    $value = get_option('wirtz_csv_folder', '');
+    echo '<input type="text" name="wirtz_csv_folder" value="' . esc_attr($value) . '" size="50"/>';
 }
 
-function display_allowed_net_id() {
-    $value = get_option('allowed_net_id', '');
-    echo '<textarea name="allowed_net_id" rows="5" cols="30">' . esc_attr($value) . '</textarea>';
+function display_wirtz_allowed_net_id() {
+    $value = get_option('wirtz_allowed_net_id', '');
+    echo '<textarea name="wirtz_allowed_net_id" rows="5" cols="30">' . esc_attr($value) . '</textarea>';
 }

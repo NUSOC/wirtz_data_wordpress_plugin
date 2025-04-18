@@ -17,35 +17,55 @@ class WirtzShow
 
     public function __construct()
     {
-    
+
         $this->wirtz_data = new WirtzData();
 
-     
+
 
         // Set up Twig
         $loader = new FilesystemLoader(__DIR__ . '/templates'); // Corrected template path
         $this->twig = new Environment($loader);
 
         $this->checks();
+
     }
 
 
-    public function checks() {
+    public function userAuthCheck() {
+        // Check if the user is logged in
+        if (!is_user_logged_in()) {
+            // User is not logged in, redirect to login page
+            wp_redirect(wp_login_url());
+            exit;
+        }
+
+        // Get the current user's NetID
+        $current_user = wp_get_current_user();
+        $netid = $current_user->user_login;
+
+        // Check if the NetID is allowed
+        $allowed_net_ids = explode(',', get_option('wirtz_allowed_net_id'));
+        if (!in_array($netid, $allowed_net_ids)) {
+            // NetID is not allowed, show an error message
+            wp_die("You do not have permission to access this page.");
+        }
+    }
+
+    public function checks()
+    {
 
 
         // does get_option('csv_folder') have value
         if (get_option('csv_folder') == '') {
             $error_message = "Trouble: No folder set in the settings page.";
             wp_die($error_message);
-            
         }
 
-          // is there a list in get_option('allowed_net_id')
+        // is there a list in get_option('allowed_net_id')
         if (count(explode(',', get_option('allowed_net_id'))) == 1 && get_option('allowed_net_id') == '') {
             $error_message = "Trouble: No NetIDs set in the settings page.";
             wp_die($error_message);
         }
-        
     }
 
     public function startpoint()
@@ -68,7 +88,7 @@ class WirtzShow
                 $people = [];
             }
 
-        // no search terms coming in     
+            // no search terms coming in     
         } else {
             $first = 0;
             $last = 0;
@@ -85,9 +105,36 @@ class WirtzShow
                 'sort' => wp_kses(trim($_GET['sort'] ?? ''), []),
                 'first' => $first,
                 'last' => $last,
-                'error'=> $error_message ?? '',
+                'error' => $error_message ?? '',
                 'people' => $people,
                 'returnPage' => $currentUrl = "http://" . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'],
+            ]
+        );
+    }
+
+
+    public function listPlaysByYear()
+    {
+
+
+        // get year from query string if needed
+        $currentyear = wp_kses(trim($_GET['currentyear'] ?? ''), "");
+
+        // if $year is empty do nothing. If not empty, get the plays for that year
+        if ($currentyear != '') {
+            $plays = $this->wirtz_data->getPlaysfromYear($currentyear);
+        } else {
+            $plays = [];
+        }
+
+        // return to the template
+        return $this->twig->render(
+            'listplays.html.twig',
+            [
+                'currentyear'   => $currentyear,
+                'years'         => $this->wirtz_data->getUniqueYears(),
+                'returnPage'    => $_SERVER['REQUEST_URI'],
+                'plays'         => $plays,
             ]
         );
     }
