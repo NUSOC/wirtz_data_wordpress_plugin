@@ -3,8 +3,7 @@
 
 namespace StackWirtz\WordpressPlugin;
 
-use Illuminate\Database\Capsule\Manager as Capsule;
-use Symfony\Component\VarDumper\VarDumper;
+
 use Twig\Environment;
 use Twig\Loader\FilesystemLoader;
 use StackWirtz\WordpressPlugin\Models\WirtzData;
@@ -26,6 +25,7 @@ class WirtzShow
         $loader = new FilesystemLoader(__DIR__ . '/templates'); // Corrected template path
         $this->twig = new Environment($loader);
 
+        // run basic checks to ensure data is set up
         $this->checks();
 
     }
@@ -49,6 +49,8 @@ class WirtzShow
             // NetID is not allowed, show an error message
             wp_die("You do not have permission to access this page.");
         }
+
+        dump($allowed_net_ids);
     }
 
     public function checks()
@@ -71,7 +73,10 @@ class WirtzShow
     public function startpoint()
     {
 
+        // check if user is logged in and has access
+        $this->userAuthCheck();
 
+        
         if (isset($_GET['first']) && isset($_GET['last'])) {
             $first = wp_kses(trim($_GET['first']), []);
             $last = wp_kses(trim($_GET['last']), []);

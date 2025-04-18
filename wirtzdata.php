@@ -7,8 +7,9 @@
  * Author: Your Name
  */
 
-    // Include the Composer autoload file
-    require_once __DIR__ . '/vendor/autoload.php';
+
+// Include the Composer autoload file
+require_once __DIR__ . '/vendor/autoload.php';
 
 function writzdata_bootstrap()
 {
@@ -26,7 +27,12 @@ function writzdata_bootstrap()
 
 
 
-// Register the shortcode
+/**
+ * Shortcode to display the main search interface form 
+ * a the CSV data. 
+ *
+ * @return string The output of the shortcode
+ */
 add_shortcode('wirtzdata', function () {
 
     // Include the bootstrap file
@@ -37,7 +43,9 @@ add_shortcode('wirtzdata', function () {
     return $wirtzShow->startpoint(); // Ensure the output is returned
 });
 
-
+/**
+ * Shortcode to display the list of plays by year
+ */
 add_shortcode('wirtzdata_listplays', function () {
 
     // Include the bootstrap file
