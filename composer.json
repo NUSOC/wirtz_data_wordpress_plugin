@@ -1,0 +1,15 @@
+{
+    "name": "stackwirtz/wirtzdata",
+    "description": "A WordPress plugin for enhanced functionality.",
+    "type": "wordpress-plugin",
+    "require": {
+        "symfony/var-dumper": "^7.2",
+        "twig/twig": "^3.20"
+    },
+    "autoload": {
+        "psr-4": {
+            "StackWirtz\\WordpressPlugin\\": "src/"
+        }
+    },
+    "license": "MIT"
+}

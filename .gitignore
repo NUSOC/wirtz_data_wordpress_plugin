@@ -5,7 +5,6 @@ node_modules/
 PyCharm30/
 venv/
 composer.lock
-composer.json
 build/
 *.log
 *~
