@@ -5,7 +5,7 @@ namespace StackWirtz\WordpressPlugin\Models;
 class WirtzData
 {
 
-    private $wirtz_env, $lastest_file, $data;
+    private $wirtz_env, $lastest_file, $data, $headers;
 
     public function __construct()
     {
@@ -60,6 +60,8 @@ class WirtzData
 
 
 
+
+
     /**
      * Converts the provided array into a format with column headers.
      * This function takes the first row of the array as headers and uses 
@@ -75,13 +77,13 @@ class WirtzData
     private function convertToArrayWithColumnHeaders(array $data)
     {
         $result = [];
-        $headers = array_shift($data); // Get the first row as headers
+        $this->headers = array_shift($data); // Get the first row as headers
 
         foreach ($data as $row) {
             $tempArray = [];
 
             // correct the headers
-            foreach ($headers as $key => $header) {
+            foreach ($this->headers as $key => $header) {
                 if ($header == 'First name') {
                     $header = 'First';
                 } elseif ($header == 'Last name') {
@@ -246,4 +248,13 @@ class WirtzData
 
         return array_values($result); // Re-index the array
     }
+
+
+    public function getHeaders()
+    {
+        return $this->headers;
+    }
+
+
+
 }
