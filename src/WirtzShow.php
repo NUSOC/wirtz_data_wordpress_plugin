@@ -58,13 +58,13 @@ class WirtzShow
 
 
         // does get_option('csv_folder') have value
-        if (get_option('csv_folder') == '') {
+        if (get_option('wirtz_csv_folder') == '') {
             $error_message = "Trouble: No folder set in the settings page.";
             wp_die($error_message);
         }
 
         // is there a list in get_option('allowed_net_id')
-        if (count(explode(',', get_option('allowed_net_id'))) == 1 && get_option('allowed_net_id') == '') {
+        if (count(explode(',', get_option('wirtz_allowed_net_id'))) == 1 && get_option('wirtz_allowed_net_id') == '') {
             $error_message = "Trouble: No NetIDs set in the settings page.";
             wp_die($error_message);
         }
