@@ -50,7 +50,7 @@ class WirtzShow
             wp_die("You do not have permission to access this page.");
         }
 
-        dump($allowed_net_ids);
+        
     }
 
     public function checks()
