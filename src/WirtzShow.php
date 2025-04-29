@@ -112,7 +112,7 @@ class WirtzShow
                 'last' => $last,
                 'error' => $error_message ?? '',
                 'people' => $people,
-                'returnPage' => $currentUrl = "http://" . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'],
+                'returnPage' => $currentUrl = $_SERVER['REQUEST_URI'],
             ]
         );
     }
