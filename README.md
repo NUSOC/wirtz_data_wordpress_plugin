@@ -3,6 +3,12 @@
 ## Description
 The WirtzData plugin allows users to interact with a Wirtz data archive through a simple shortcode. 
 
+## Current ShortCodes
+
+`[wirtzdata]` - Name search. Requires that your username/netid be in the `get_option('wirtz_allowed_net_id')`
+
+`[wirtzdata_listplays]` - Lists plays by year
+
 ## Installation
 1. Download the plugin files.
 2. Upload the `wirtzdata-plugin` folder to the `/wp-content/plugins/` directory.
