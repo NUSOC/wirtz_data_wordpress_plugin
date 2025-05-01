@@ -35,6 +35,13 @@ function writzdata_bootstrap()
  */
 add_shortcode('wirtzdata', function () {
 
+    // Logic to check if the user is logged in. If not logged in, 
+    // redirect to the login page.
+    if (!is_user_logged_in()) {
+        $login_url = wp_login_url();  // Get the URL of the login page
+        return '<a href="' . $login_url . '">Click here to log in</a>';
+    }
+
     // Include the bootstrap file
     writzdata_bootstrap();
 
@@ -57,6 +64,10 @@ add_shortcode('wirtzdata_listplays', function () {
 
 
 add_shortcode('wirtzdata_test', function () {
+
+
+  
+
     // Include the bootstrap file
     writzdata_bootstrap();
     $wirtzData = new StackWirtz\WordpressPlugin\Models\WirtzData();
