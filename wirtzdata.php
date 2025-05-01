@@ -39,7 +39,7 @@ add_shortcode('wirtzdata', function () {
     // redirect to the login page.
     if (!is_user_logged_in()) {
         $login_url = wp_login_url();  // Get the URL of the login page
-        return '<a href="' . $login_url . '">Click here to log in</a>';
+        return 'You must be logged in and have permission to use this utility: <br> <a href="' . $login_url . '">Click here to log in</a>';
     }
 
     // Include the bootstrap file
