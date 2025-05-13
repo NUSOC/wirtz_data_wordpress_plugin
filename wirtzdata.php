@@ -82,6 +82,58 @@ add_shortcode('wirtzdata_test', function () {
 
 
 
+/**
+ * Filter to redirect subscribers to a specific page after login
+ * 
+ * Checks if the logged in user is a subscriber and redirects them to a configured 
+ * page or post after login. The redirect location is set in the plugin settings
+ * using the 'wirtz_data_stright_to_search_after_login_location' option.
+ * The option value should be in the format 'page_123' or 'post_123' where 123 is the post/page ID.
+ *
+ * @filter login_redirect
+ * @param string $redirect_to The redirect destination URL
+ * @param string $request The requested redirect URL 
+ * @param WP_User|WP_Error $user WP_User object if login was successful, WP_Error if not
+ * @return string Modified redirect URL if conditions are met, original URL otherwise
+ * @since 1.0.0
+ */
+add_filter('login_redirect', function($redirect_to, $request, $user) {
+
+    // Return early if redirect option is disabled
+    if (!get_option('wirtz_data_stright_to_search_after_login', false)) {
+        return $redirect_to;
+    }
+
+    $option_value = get_option('wirtz_data_stright_to_search_after_login_location');
+    
+    // Return early if option is empty
+    if (empty($option_value)) {
+        return $redirect_to;
+    }
+
+    if (isset($user->roles) && is_array($user->roles) && in_array('subscriber', $user->roles)) {
+        if (preg_match('/^(page|post)_(\d+)$/', $option_value, $matches)) {
+            $post_type = $matches[1]; // 'page' or 'post'
+            $post_id = (int) $matches[2];
+
+            // Optional: verify post type matches the ID
+            $post = get_post($post_id);
+            if ($post && $post->post_type === $post_type) {
+                $url = get_permalink($post_id);
+                if ($url) {
+                    return $url;
+                }
+            }
+        }
+    }
+    return $redirect_to;
+}, 10, 3);
+
+
+
+
+
+
 
 
 
