@@ -33,6 +33,7 @@ function wirtz_data_settings_register() {
     // Register settings
     register_setting('wirtz-data-group', 'wirtz_csv_folder');
     register_setting('wirtz-data-group', 'wirtz_allowed_net_id');
+    register_setting('wirtz-data-group', 'wirtz_data_allow_all_netids');
 
     // Add settings section
     add_settings_section(
@@ -57,6 +58,13 @@ function wirtz_data_settings_register() {
         'wirtz-data-settings', 
         'wirtz-data-group'
     );
+    add_settings_field(
+        'wirtz_data_allow_all_netids', 
+        'Allow All NetIDs', 
+        'display_wirtz_data_allow_all_netids', 
+        'wirtz-data-settings', 
+        'wirtz-data-group'
+    );
 }
 add_action('admin_init', 'wirtz_data_settings_register');
 
@@ -68,4 +76,10 @@ function display_wirtz_csv_folder() {
 function display_wirtz_allowed_net_id() {
     $value = get_option('wirtz_allowed_net_id', '');
     echo '<textarea name="wirtz_allowed_net_id" rows="5" cols="30">' . esc_attr($value) . '</textarea>';
+}
+
+function display_wirtz_data_allow_all_netids() {
+    $value = get_option('wirtz_data_allow_all_netids', '');
+    echo '<input type="checkbox" name="wirtz_data_allow_all_netids" value="1" ' . checked(1, $value, false) . '/>';
+    echo '<span class="description">Check this box to allow all NetIDs to access the data</span>';
 }

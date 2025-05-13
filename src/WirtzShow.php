@@ -32,11 +32,18 @@ class WirtzShow
 
 
     public function userAuthCheck() {
+
         // Check if the user is logged in
         if (!is_user_logged_in()) {
             // User is not logged in, redirect to login page
             wp_redirect(wp_login_url());
             exit;
+        }
+
+
+        // If wirtz_data_allow_all_netids is checked just return
+        if(get_option('wirtz_data_allow_all_netids')) {
+            return true;
         }
 
         // Get the current user's NetID

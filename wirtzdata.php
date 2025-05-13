@@ -66,7 +66,6 @@ add_shortcode('wirtzdata_listplays', function () {
 add_shortcode('wirtzdata_test', function () {
 
 
-  
 
     // Include the bootstrap file
     writzdata_bootstrap();
