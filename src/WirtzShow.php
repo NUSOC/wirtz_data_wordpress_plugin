@@ -124,9 +124,9 @@ class WirtzShow
         
         // no search terms coming in 
         else {
-            $first = 0;
-            $last = 0;
-            $production = 0;
+            $first = '';
+            $last = '';
+            $production = '';
             $people = [];
         }
 
