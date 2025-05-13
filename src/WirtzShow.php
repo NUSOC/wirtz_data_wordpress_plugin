@@ -93,6 +93,7 @@ class WirtzShow
 
         
         if (isset($_GET['first']) && isset($_GET['last']) &&isset($_GET['production'])) {
+           
             // Add additional sanitization for better security
             $first = sanitize_text_field(wp_unslash(trim($_GET['first'])));
             $last = sanitize_text_field(wp_unslash(trim($_GET['last'])));
@@ -112,7 +113,7 @@ class WirtzShow
                     $production,
                     sanitize_text_field(wp_unslash($_GET['sort'] ?? 'Name')),                );
             } else {
-                $error_message = "Trouble: First or last names must be longer than two characters";
+                $error_message = "Trouble: First or last names and/or production name must be longer than two characters";
                 $people = [];
             }
 
