@@ -93,9 +93,16 @@ class WirtzShow
 
         
         if (isset($_GET['first']) && isset($_GET['last']) &&isset($_GET['production'])) {
-            $first = wp_kses(trim($_GET['first']), []);
-            $last = wp_kses(trim($_GET['last']), []);
-            $production = wp_kses(trim($_GET['production']), []);
+            $first = wp_kses(trim($_GET['first']), '');
+            $last = wp_kses(trim($_GET['last']), '');
+            $production = wp_kses(trim($_GET['production']), '');
+
+
+            // to prevent 0 from showing up in text fields
+            if ($first == 0) $first = '';
+            if ($last == 0) $last = '';
+            if ($production == 0) $production = '';
+
 
             // Check if first and last names are longer than 3 characters
             if (strlen($first) > 2 || strlen($last) > 2 || strlen($production) > 4) {
@@ -131,8 +138,8 @@ class WirtzShow
             'startpoint.html.twig',
             [
                 'sort' => wp_kses(trim($_GET['sort'] ?? ''), []),
-                'first' => $first,
-                'last' => $last,
+                'first' => $first ?? '',
+                'last' => $last ?? '',
                 'production' => $production,
                 'error' => $error_message ?? '',
                 'people' => $people,
