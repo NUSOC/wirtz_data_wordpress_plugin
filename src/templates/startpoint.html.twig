@@ -32,10 +32,11 @@
 
 <p>
 <form action="{{ returnPage }}" method="get">
-    <input type="text" name="first"  placeholder="Search first name"
+    <input type="text" name="first" value="{{ first|default('') }}" placeholder="Search first name"
         aria-label="Search by first name" />
-    <input type="text" name="last" placeholder="Search last name"
+    <input type="text" name="last" value="{{ last|default('') }}"  placeholder="Search last name"
         aria-label="Search by last name" />
+    <input type="text" name="production" value="{{ production|default('') }}"  placeholder="Search by Production" aria-label="Search by production name" />
     <br />
     <label for="sort">Sort By:</label>
     <select name="sort" id="" aria-live="polite">
@@ -72,8 +73,9 @@
         {% set color = 'lightgray' %}
     {% endif %}
     <tr style="background-color: {{ color }};">
-        <td>{{ person.First }} </td>
-        <td>{{ person.Last }}</td>
+       
+        <td>{{ person.First }}</td>
+        <td>{{ person.Last }}</td>             
         <td>{{ person.Team }}</td>
         <td>{{ person.Role }}</td>
         <td>{{ person.Grad }}</td>

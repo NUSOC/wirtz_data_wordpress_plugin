@@ -212,41 +212,37 @@ class WirtzData
     }
 
     /**
-     * Search for people by first and last name.
+     * Search for people by first and last name, or by production name.
+     * Results can be sorted by production, last name, year, or first name.
      * 
      * @param string $first The first name to search for
-     * @param string $last The last name to search for
-     * @return array An array of matching people
+     * @param string $last The last name to search for 
+     * @param string $production The production name to search for
+     * @param string $sort The sort order - 'production', 'last', 'year' or defaults to first name
+     * @return array An array of matching people, sorted according to the sort parameter
      */
-    public function doSearch($first, $last, $sort)
+    public function doSearch($first, $last, $production, $sort)
     {
-        $first = strtolower($first);
-        $last = strtolower($last);
+        $terms = array_map('strtolower', compact('first', 'last', 'production'));
 
-        $result = array_filter($this->getData(), function ($row) use ($first, $last) {
-            return (stripos($row['First'], $first) !== false && stripos($row['Last'], $last) !== false);
+        $result = array_filter($this->getData(), function ($row) use ($terms) {
+            return (!$terms['first'] || stripos($row['First'], $terms['first']) !== false) &&
+                (!$terms['last'] || stripos($row['Last'], $terms['last']) !== false) &&
+                (!$terms['production'] || stripos($row['Production'], $terms['production']) !== false);
+        });
+        $sortFields = [
+            'production' => 'Production',
+            'last' => 'Last',
+            'year' => 'Year',
+            'first' => 'First'
+        ];
+
+        $field = $sortFields[$sort] ?? 'First';
+        usort($result, function ($a, $b) use ($field) {
+            return strcasecmp($a[$field], $b[$field]);
         });
 
-        if ($sort == 'production') {
-            usort($result, function ($a, $b) {
-                return strcmp($a['Production'], $b['Production']);
-            });
-        } elseif ($sort == 'last') {
-            usort($result, function ($a, $b) {
-                return strcmp($a['Year'], $b['Year']);
-            });
-        } elseif ($sort == 'year') {
-            usort($result, function ($a, $b) {
-                return strcmp($a['Year'], $b['Year']);
-            });
-        } else {
-            usort($result, function ($a, $b) {
-                return strcasecmp($a['First'], $b['First']);
-            });
-        }
-
-
-        return array_values($result); // Re-index the array
+        return $result;
     }
 
 
@@ -254,7 +250,4 @@ class WirtzData
     {
         return $this->headers;
     }
-
-
-
 }

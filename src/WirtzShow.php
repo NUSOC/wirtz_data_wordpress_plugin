@@ -77,6 +77,14 @@ class WirtzShow
         }
     }
 
+    /**
+     * Handles the main search functionality for people
+     * 
+     * Checks user authentication, processes search parameters for first/last names,
+     * validates input length, and returns rendered template with search results
+     *
+     * @return string Rendered Twig template with search results and parameters
+     */
     public function startpoint()
     {
 
@@ -84,15 +92,17 @@ class WirtzShow
         $this->userAuthCheck();
 
         
-        if (isset($_GET['first']) && isset($_GET['last'])) {
+        if (isset($_GET['first']) && isset($_GET['last']) &&isset($_GET['production'])) {
             $first = wp_kses(trim($_GET['first']), []);
             $last = wp_kses(trim($_GET['last']), []);
+            $production = wp_kses(trim($_GET['production']), []);
 
             // Check if first and last names are longer than 3 characters
-            if (strlen($first) > 2 || strlen($last) > 2) {
+            if (strlen($first) > 2 || strlen($last) > 2 || strlen($production) > 4) {
                 $people = $this->wirtz_data->doSearch(
                     $first,
                     $last,
+                    $production,
                     wp_kses($_GET['sort'] ?? 'Name', []),
                 );
             } else {
@@ -100,10 +110,16 @@ class WirtzShow
                 $people = [];
             }
 
-            // no search terms coming in     
-        } else {
+                
+        } 
+
+        // else if 
+        
+        // no search terms coming in 
+        else {
             $first = 0;
             $last = 0;
+            $production = 0;
             $people = [];
         }
 
@@ -117,6 +133,7 @@ class WirtzShow
                 'sort' => wp_kses(trim($_GET['sort'] ?? ''), []),
                 'first' => $first,
                 'last' => $last,
+                'production' => $production,
                 'error' => $error_message ?? '',
                 'people' => $people,
                 'returnPage' => $currentUrl = $_SERVER['REQUEST_URI'],
