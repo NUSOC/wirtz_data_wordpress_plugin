@@ -31,7 +31,6 @@ function writzdata_bootstrap()
     if (is_admin()) {
         return '';
     }
-
 }
 
 
@@ -49,7 +48,7 @@ add_shortcode('wirtzdata', function () {
     if (!is_user_logged_in()) {
         // Redirect to wp-admin login page
         $login_url = wp_login_url();
-        
+
         return 'You must be logged in and have permission to use this utility: <br> <a href="' . esc_url($login_url) . '">Click here to log in</a>';
     }
 
@@ -95,12 +94,64 @@ add_shortcode('wirtzdata_test', function () {
 
     dump($wirtzData->getHeaders());
 
-     return "";
-
-
+    return "";
 });
 
 
+
+
+
+/**
+ * Display admin notice for subscriber role users only
+ * 
+ * Shows a notification message in the WordPress admin area for users with the 'subscriber' role.
+ * The notice contains a link to the Wirtz Data search page and automatically redirects to that page.
+ *
+ * Process:
+ * 1. Gets the current logged in user
+ * 2. Checks if user has subscriber role
+ * 3. Gets the configured redirect URL from WordPress options
+ * 4. Extracts post/page ID from the stored option value
+ * 5. Generates permalink URL for the target page
+ * 6. Outputs HTML notice with:
+ *    - Dismissible info-style admin notice div
+ *    - Link to search page
+ *    - JavaScript that auto-redirects after 50ms delay
+ * 
+ * Pro tip: Using printf() with HEREDOC syntax for HTML is way better than 
+ * writing separate echo statements like some kind of caveman. Your 
+ * coworkers will thank you. Your code reviewer will weep tears of joy.
+ * 
+ * @uses wp_get_current_user() Get current user object
+ * @uses get_option() Get redirect URL from WP options
+ * @uses get_permalink() Get full URL for post/page
+ * @uses esc_url() Escape URL for safe output
+ */
+add_action('admin_notices', function () {
+    $user = wp_get_current_user();
+    if ($user && in_array('subscriber', $user->roles)) {
+        $redirect_url = get_option('wirtz_data_stright_to_search_after_login_location');
+        if ($redirect_url) {
+            // Extract the ID from the Page_X or Post_X format
+            $parts = explode('_', $redirect_url);
+            $post_id = isset($parts[1]) ? intval($parts[1]) : 0;
+
+            if ($post_id > 0) {
+                $url = get_permalink($post_id);
+                printf(
+                    <<<HTML
+                        <div class="notice notice-info is-dismissible">
+                            <p>You can access the Wirtz Data search page here: <a href="%s">Wirtz Data Search</a></p>
+                            <script>setTimeout(function(){ window.location.href = "%s"; }, 50 );</script>
+                        </div>
+                    HTML,
+                    esc_url($url),
+                    esc_url($url)
+                );
+            }
+        }
+    }
+});
 
 
 
