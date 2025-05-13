@@ -61,6 +61,9 @@ add_shortcode('wirtzdata', function () {
     return $wirtzShow->startpoint(); // Ensure the output is returned
 });
 
+
+
+
 /**
  * Shortcode to display the list of plays by year
  */
@@ -74,6 +77,14 @@ add_shortcode('wirtzdata_listplays', function () {
 
 
 
+/**
+ * Test shortcode to display CSV headers
+ * 
+ * Creates a test shortcode that initializes the WirtzData model
+ * and dumps the CSV headers. Used for debugging purposes.
+ *
+ * @return string Empty string after dumping headers
+ */
 add_shortcode('wirtzdata_test', function () {
 
 
