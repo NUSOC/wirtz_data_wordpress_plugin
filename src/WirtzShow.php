@@ -93,10 +93,10 @@ class WirtzShow
 
         
         if (isset($_GET['first']) && isset($_GET['last']) &&isset($_GET['production'])) {
-            $first = wp_kses(trim($_GET['first']), '');
-            $last = wp_kses(trim($_GET['last']), '');
-            $production = wp_kses(trim($_GET['production']), '');
-
+            // Add additional sanitization for better security
+            $first = sanitize_text_field(wp_unslash(trim($_GET['first'])));
+            $last = sanitize_text_field(wp_unslash(trim($_GET['last'])));
+            $production = sanitize_text_field(wp_unslash(trim($_GET['production'])));
 
             // to prevent 0 from showing up in text fields
             if ($first == 0) $first = '';
@@ -110,8 +110,7 @@ class WirtzShow
                     $first,
                     $last,
                     $production,
-                    wp_kses($_GET['sort'] ?? 'Name', []),
-                );
+                    sanitize_text_field(wp_unslash($_GET['sort'] ?? 'Name')),                );
             } else {
                 $error_message = "Trouble: First or last names must be longer than two characters";
                 $people = [];
@@ -137,8 +136,8 @@ class WirtzShow
         return $this->twig->render(
             'startpoint.html.twig',
             [
-                'sort' => wp_kses(trim($_GET['sort'] ?? ''), []),
-                'first' => $first ?? '',
+                sanitize_text_field(wp_unslash($_GET['sort'] ?? '')),               
+                 'first' => $first ?? '',
                 'last' => $last ?? '',
                 'production' => $production,
                 'error' => $error_message ?? '',
