@@ -137,7 +137,7 @@ class WirtzShow
             'startpoint.html.twig',
             [
                 sanitize_text_field(wp_unslash($_GET['sort'] ?? '')),               
-                 'first' => $first ?? '',
+                'first' => $first ?? '',
                 'last' => $last ?? '',
                 'production' => $production,
                 'error' => $error_message ?? '',
@@ -148,6 +148,15 @@ class WirtzShow
     }
 
 
+    /**
+     * Lists plays for a specific year
+     * 
+     * Gets the year from the query string parameter 'currentyear',
+     * retrieves plays for that year from wirtz_data, and renders
+     * the results in a template with year selection options
+     *
+     * @return string Rendered Twig template with plays list and year selection
+     */
     public function listPlaysByYear()
     {
 
