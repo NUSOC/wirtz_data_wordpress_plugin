@@ -4,13 +4,22 @@
  * Plugin Name: Wirtz Data
  * Description: A plugin to retrieve data from a CSV data using a shortcode.
  * Version: 1.0
- * Author: Your Name
+ * Author: SOC External Affairs
  */
 
 
 // Include the Composer autoload file
 require_once __DIR__ . '/vendor/autoload.php';
 
+/**
+ * Bootstrap function for the Wirtz Data plugin
+ * 
+ * Checks if the current page is appropriate for running the plugin functionality.
+ * Returns early with an empty string if on front page, home page, archive page,
+ * or in admin area.
+ *
+ * @return string Empty string if conditions are not met for plugin execution
+ */
 function writzdata_bootstrap()
 {
     // If on the front page or home page, return an empty string
