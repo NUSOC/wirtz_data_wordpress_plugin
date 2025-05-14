@@ -128,6 +128,7 @@ add_shortcode('wirtzdata_test', function () {
  */
 add_action('admin_notices', function () {
     
+    return; 
     
     $user = wp_get_current_user();
 
