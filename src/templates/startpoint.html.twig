@@ -42,6 +42,8 @@
             <td>
                 <input type="text" id="first" name="first" value="{{ first is defined ? first : '' }}"
                     placeholder="Search first name" aria-label="Search by first name">
+                <button type="button" onclick="document.getElementById('first').value=''"
+                    aria-label="Clear first name field">Clear</button>
             </td>
         </tr>
         <tr>
@@ -51,6 +53,9 @@
             <td>
                 <input type="text" id="last" name="last" value="{{ last|default('') }}" placeholder="Search last name"
                     aria-label="Search by last name">
+                <button type="button" onclick="document.getElementById('last').value=''"
+                    aria-label="Clear last name field">Clear</button>
+
             </td>
         </tr>
         <tr>
@@ -60,6 +65,9 @@
             <td>
                 <input type="text" id="production" name="production" value="{{ production|default('') }}"
                     placeholder="Search by Production" aria-label="Search by production name">
+                <button type="button" onclick="document.getElementById('production').value=''"
+                    aria-label="Clear production field">Clear</button>
+
             </td>
         </tr>
         <tr>
@@ -69,6 +77,8 @@
             <td>
                 <input type="text" id="team" name="team" value="{{ team|default('') }}" placeholder="Search by Team"
                     aria-label="Search by team">
+                <button type="button" onclick="document.getElementById('team').value=''"
+                    aria-label="Clear team field">Clear</button>
             </td>
         </tr>
     </table>
@@ -114,7 +124,9 @@
 
         <td>{{ person.First }}</td>
         <td>{{ person.Last }}</td>
-        <td>{% if person.Team %}<a href="{{ returnPage }}?{% if first %}first={{ first }}&{% endif %}{% if last %}last={{ last }}&{% endif %}{% if production %}production={{ production }}&{% endif %}team={{ person.Team }}">{{ person.Team }}</a>
+        <td>{% if person.Team %}<a
+                href="{{ returnPage }}?{% if first %}first={{ first }}&{% endif %}{% if last %}last={{ last }}&{% endif %}{% if production %}production={{ production }}&{% endif %}team={{ person.Team }}">{{
+                person.Team }}</a>
             {% else%}&nbsp;
             {% endif %}
         </td>
@@ -123,7 +135,9 @@
         <td>{{ person.Career }}</td>
         <td>{{ person.Year }}</td>
         <td>{% if person.Production %}
-            <a href="{{ returnPage }}?{% if first %}first={{ first }}&{% endif %}{% if last %}last={{ last }}&{% endif %}{% if team %}team={{ team }}&{% endif %}production={{ person.Production }}">{{ person.Production }}</a>
+            <a
+                href="{{ returnPage }}?{% if first %}first={{ first }}&{% endif %}{% if last %}last={{ last }}&{% endif %}{% if team %}team={{ team }}&{% endif %}production={{ person.Production }}">{{
+                person.Production }}</a>
             {% else %} &nbsp;
             {% endif %}
         </td>
