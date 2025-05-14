@@ -47,7 +47,7 @@ class WirtzShow
         if (!is_user_logged_in()) {
             // User is not logged in, redirect to login page
             wp_redirect(wp_login_url());
-            exit;
+       
         }
 
 
