@@ -128,7 +128,7 @@ add_shortcode('wirtzdata_test', function () {
  */
 add_action('admin_notices', function () {
     
-    return; 
+   
     
     $user = wp_get_current_user();
 
@@ -145,18 +145,18 @@ add_action('admin_notices', function () {
                         <style>
                             
                         </style>
-                        <div class="notice notice-info is-dismissible">
-                            <p style="font-size: 32px; float: left;" >
+                        <div class="notice notice-info is-dismissible" style="font-size: 32px; float: left;" >
+                          
                                 🔎 You can access the Wirtz Data search page here: <a href="%s">%s</a>
-                            </p>
-                            <script>
-                                document.addEventListener("DOMContentLoaded", function() {
-                                    setTimeout(function(){
-                                        window.location.replace("%s?random=" + Date.now());
-                                    }, 10000);
-                                });
-                            </script>
                         </div>
+                        <script>
+                            document.addEventListener("DOMContentLoaded", function() {
+                                setTimeout(function(){
+                                    window.location.replace("%s?random=" + Date.now());
+                                }, 10000);
+                            });
+                        </script>
+                        
                     HTML,
                     esc_url($url),
                     esc_url($url),
