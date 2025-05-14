@@ -32,12 +32,48 @@
 
 <p>
 <form action="{{ returnPage }}" method="get">
-    <input type="text" name="first" value="{{ first is defined ? first : '' }}"
-        placeholder="Search first name" aria-label="Search by first name" />
-    <input type="text" name="last" value="{{ last|default('') }}" placeholder="Search last name"
-        aria-label="Search by last name" />
-    <input type="text" name="production" value="{{ production|default('') }}" placeholder="Search by Production"
-        aria-label="Search by production name" />
+
+
+    <table>
+        <tr>
+            <td width="20%">
+                <label for="first">First Name:</label>
+            </td>
+            <td>
+                <input type="text" id="first" name="first" value="{{ first is defined ? first : '' }}"
+                    placeholder="Search first name" aria-label="Search by first name">
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <label for="last">Last Name:</label>
+            </td>
+            <td>
+                <input type="text" id="last" name="last" value="{{ last|default('') }}" placeholder="Search last name"
+                    aria-label="Search by last name">
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <label for="production">Production:</label>
+            </td>
+            <td>
+                <input type="text" id="production" name="production" value="{{ production|default('') }}"
+                    placeholder="Search by Production" aria-label="Search by production name">
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <label for="team">Team:</label>
+            </td>
+            <td>
+                <input type="text" id="team" name="team" value="{{ team|default('') }}" placeholder="Search by Team"
+                    aria-label="Search by team">
+            </td>
+        </tr>
+    </table>
+
+
     <br />
     <label for="sort">Sort By:</label>
     <select name="sort" id="" aria-live="polite">

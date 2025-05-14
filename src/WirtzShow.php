@@ -102,28 +102,24 @@ class WirtzShow
         $this->userAuthCheck();
 
         
-        if (isset($_GET['first']) && isset($_GET['last']) &&isset($_GET['production'])) {
+        if (isset($_GET['first']) || isset($_GET['last']) || isset($_GET['production']) || isset($_GET)) {
            
-            // Add additional sanitization for better security
-            $first = sanitize_text_field(wp_unslash(trim($_GET['first'])));
-            $last = sanitize_text_field(wp_unslash(trim($_GET['last'])));
-            $production = sanitize_text_field(wp_unslash(trim($_GET['production'])));
-
-            // to prevent 0 from showing up in text fields
-            if ($first == 0) $first = '';
-            if ($last == 0) $last = '';
-            if ($production == 0) $production = '';
-
+            // Sanitize and validate input parameters, converting 0 values to empty strings
+            $first      = ($temp = sanitize_text_field(wp_unslash(trim($_GET['first'] ?? '')))) == 0 ? '' : $temp;
+            $last       = ($temp = sanitize_text_field(wp_unslash(trim($_GET['last'] ?? '')))) == 0 ? '' : $temp;
+            $production = ($temp = sanitize_text_field(wp_unslash(trim($_GET['production'] ?? '')))) == 0 ? '' : $temp;
+            $team       = ($temp = sanitize_text_field(wp_unslash(trim($_GET['team'] ?? '')))) == 0 ? '' : $temp;
 
             // Check if first and last names are longer than 3 characters
-            if (strlen($first) > 2 || strlen($last) > 2 || strlen($production) > 4) {
+            if (strlen($first) > 2 || strlen($last) > 2 || strlen($production) > 4 || strlen($team) > 4) {
                 $people = $this->wirtz_data->doSearch(
                     $first,
                     $last,
                     $production,
+                    $team,
                     sanitize_text_field(wp_unslash($_GET['sort'] ?? 'Name')),                );
             } else {
-                $error_message = "Trouble: First or last names and/or production name must be longer than two characters";
+                $error_message = "Trouble: Need more text to search! ";
                 $people = [];
             }
 
@@ -150,6 +146,7 @@ class WirtzShow
                 sanitize_text_field(wp_unslash($_GET['sort'] ?? '')),               
                 'first' => $first ?? '',
                 'last' => $last ?? '',
+                'team' => $team ?? '',
                 'production' => $production,
                 'error' => $error_message ?? '',
                 'people' => $people,

@@ -221,15 +221,20 @@ class WirtzData
      * @param string $sort The sort order - 'production', 'last', 'year' or defaults to first name
      * @return array An array of matching people, sorted according to the sort parameter
      */
-    public function doSearch($first, $last, $production, $sort)
+    public function doSearch($first, $last, $production, $team, $sort)
     {
         $terms = array_map('strtolower', compact('first', 'last', 'production'));
 
-        $result = array_filter($this->getData(), function ($row) use ($terms) {
+        $result = array_filter($this->getData(), function ($row) use ($terms, $team) {
             return (!$terms['first'] || stripos($row['First'], $terms['first']) !== false) &&
                 (!$terms['last'] || stripos($row['Last'], $terms['last']) !== false) &&
-                (!$terms['production'] || stripos($row['Production'], $terms['production']) !== false);
+                (!$terms['production'] || stripos($row['Production'], $terms['production']) !== false) &&
+                (!$team || stripos($row['Team'], $team) !== false);
         });
+
+
+        // dump($result);
+
         $sortFields = [
             'production' => 'Production',
             'last' => 'Last',
