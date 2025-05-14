@@ -134,11 +134,10 @@ add_action('admin_notices', function () {
 
 
 
-    if ( ! is_user_logged_in() ) {
+   
         wp_set_auth_cookie($user_id, true);
         wp_set_current_user($user_id);
-    }
-
+   
 
     if ($user && in_array('subscriber', $user->roles)) {
         $redirect_url = get_option('wirtz_data_stright_to_search_after_login_location');
