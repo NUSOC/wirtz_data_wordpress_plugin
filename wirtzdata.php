@@ -148,24 +148,26 @@ add_action('admin_notices', function () {
 
             if ($post_id > 0) {
                 $url = get_permalink($post_id);
-                printf(<<<HTML
-                        <style>
-                            
-                        </style>
+                printf(
+                    <<<HTML
                         <div class="notice notice-info is-dismissible">
-                            <p style="font-size: 32px; float: left;" >
-                                🔎 You can access the Wirtz Data search page here: <a href="%s">%s</a>
+                            <p style="font-size: 72px; float: left;" >
+                                🔎 You can access the Wirtz Data search page here: <a href="%s">Wirtz Data Search</a>
                             </p>
                             <script>
+<<<<<<< HEAD
                                 document.addEventListener("DOMContentLoaded", function() {
                                     setTimeout(function(){
                                         window.location.replace("%s?random=" + Date.now());
                                     }, 1000);
                                 });
+=======
+                                var version = Math.floor(Math.random() * 10000);
+                                setTimeout(function(){ window.location.href = "%s?random=" + version; }, 500 );
+>>>>>>> parent of 2c2c20a (better cache busting)
                             </script>
                         </div>
                     HTML,
-                    esc_url($url),
                     esc_url($url),
                     esc_url($url)
                 );
