@@ -43,10 +43,11 @@ function writzdata_bootstrap()
  */
 add_shortcode('wirtzdata', function () {
 
-    // Logic to check if the user is logged in. If not logged in, 
-    // redirect to the login page.
+    // Check if user is currently logged into WordPress
+    // If not authenticated, generate HTML with login URL and JavaScript redirect
+    // This ensures only logged-in users can access the data
     if (!is_user_logged_in()) {
-        // Redirect to wp-admin login page
+        // Get WordPress login URL using wp_login_url() function
         $login_url = wp_login_url();
         return <<<HTML
             You are being forward to the login page: <br> <a href="$login_url">$login_url</a>
@@ -58,7 +59,6 @@ add_shortcode('wirtzdata', function () {
             </script>
         HTML;
     }
-
     // Include the bootstrap file
     writzdata_bootstrap();
 
@@ -135,9 +135,9 @@ add_shortcode('wirtzdata_test', function () {
  * @uses esc_url() Escape URL for safe output
  */
 add_action('admin_notices', function () {
-    
-   
-    
+
+
+
     $user = wp_get_current_user();
 
     if ($user && in_array('subscriber', $user->roles)) {
@@ -149,7 +149,8 @@ add_action('admin_notices', function () {
 
             if ($post_id > 0) {
                 $url = get_permalink($post_id);
-                printf(<<<HTML
+                printf(
+                    <<<HTML
                         <style>
                             
                         </style>

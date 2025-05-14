@@ -87,7 +87,8 @@
 
 
 
-<h2>People</h2>
+<h3>Search Results</h3>
+
 <p>There are {{ people|length }} records from this search.</p>
 <table>
 
@@ -113,12 +114,19 @@
 
         <td>{{ person.First }}</td>
         <td>{{ person.Last }}</td>
-        <td>{{ person.Team }}</td>
+        <td>{% if person.Team %}<a href="{{ returnPage }}?team={{ person.Team }}">{{ person.Team }}</a>
+            {% else%}&nbsp;
+            {% endif %}
+        </td>
         <td>{{ person.Role }}</td>
         <td>{{ person.Grad }}</td>
         <td>{{ person.Career }}</td>
         <td>{{ person.Year }}</td>
-        <td>{{ person.Production }}</td>
+        <td>{% if person.Production %}
+            <a href="{{ returnPage }}?production={{ person.Production }}">{{ person.Production }}</a>
+            {% else %} &nbsp;
+            {% endif %}
+        </td>
     </tr>
     {% endfor %}
 
