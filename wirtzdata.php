@@ -141,8 +141,13 @@ add_action('admin_notices', function () {
                 printf(
                     <<<HTML
                         <div class="notice notice-info is-dismissible">
-                            <p>You can access the Wirtz Data search page here: <a href="%s">Wirtz Data Search</a></p>
-                            <script>setTimeout(function(){ window.location.href = "%s"; }, 50 );</script>
+                            <p style="font-size: 72px; float: left;" >
+                                🔎 You can access the Wirtz Data search page here: <a href="%s">Wirtz Data Search</a>
+                            </p>
+                            <script>
+                                var version = Math.floor(Math.random() * 10000);
+                                setTimeout(function(){ window.location.href = "%s?random=" + version; }, 500 );
+                            </script>
                         </div>
                     HTML,
                     esc_url($url),
