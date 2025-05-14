@@ -102,7 +102,7 @@ class WirtzShow
         $this->userAuthCheck();
 
         
-        if (isset($_GET['first']) || isset($_GET['last']) || isset($_GET['production']) || isset($_GET)) {
+        if (isset($_GET['first']) || isset($_GET['last']) || isset($_GET['production']) || isset($_GET['team'])) {
            
             // Sanitize and validate input parameters, converting 0 values to empty strings
             $first      = ($temp = sanitize_text_field(wp_unslash(trim($_GET['first'] ?? '')))) == 0 ? '' : $temp;
