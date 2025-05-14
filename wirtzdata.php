@@ -161,7 +161,7 @@ add_action('admin_notices', function () {
                             document.addEventListener("DOMContentLoaded", function() {
                                 setTimeout(function(){
                                     window.location.replace("%s?random=" + Date.now());
-                                }, 10000);
+                                }, 100);
                             });
                         </script>
                         
