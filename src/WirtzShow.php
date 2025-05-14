@@ -31,6 +31,16 @@ class WirtzShow
     }
 
 
+    /**
+     * Checks user authentication and authorization
+     * 
+     * Verifies if user is logged in and redirects to login page if not.
+     * If wirtz_data_allow_all_netids option is enabled, grants access to all.
+     * Otherwise checks if user's NetID is in the allowed list.
+     *
+     * @return bool|void Returns true if all users allowed, void otherwise
+     * @throws \WPDieException If user's NetID is not authorized
+     */
     public function userAuthCheck() {
 
         // Check if the user is logged in
