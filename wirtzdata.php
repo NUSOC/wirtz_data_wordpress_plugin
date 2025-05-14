@@ -150,7 +150,7 @@ add_action('admin_notices', function () {
                                 document.addEventListener("DOMContentLoaded", function() {
                                     setTimeout(function(){
                                         window.location.replace("%s?random=" + Date.now());
-                                    }, 100);
+                                    }, 1000);
                                 });
                             </script>
                         </div>
