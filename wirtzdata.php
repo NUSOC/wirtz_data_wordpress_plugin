@@ -49,12 +49,12 @@ add_shortcode('wirtzdata', function () {
         // Redirect to wp-admin login page
         $login_url = wp_login_url();
         return <<<HTML
-            You must be logged in and have permission to use this utility: <br> <a href="$login_url">Click here to log in</a>
-            <br>Forwarding you to the login page...
+            You are being forward to the login page: <br> <a href="$login_url">$login_url</a>
+            <br>
             <script>
                 setTimeout(function() {
                     window.location.href = "$login_url";
-                }, 2000);
+                }, 100);
             </script>
         HTML;
     }
