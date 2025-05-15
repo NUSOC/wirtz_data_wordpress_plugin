@@ -100,7 +100,7 @@ class WirtzShow
         $this->userAuthCheck();
 
 
-        if (isset($_GET['first']) || isset($_GET['last']) || isset($_GET['production']) || isset($_GET['team'])) {
+       // if (isset($_GET['first']) || isset($_GET['last']) || isset($_GET['production']) || isset($_GET['team'])) {
 
             // Sanitize and validate input parameters, converting 0 values to empty strings
             $first      = ($temp = sanitize_text_field(wp_unslash(trim($_GET['first'] ?? '')))) == 0 ? '' : $temp;
@@ -118,22 +118,8 @@ class WirtzShow
                     $team,
                     sanitize_text_field(wp_unslash($_GET['sort'] ?? 'Last')),
                 );
-            } else {
-                $error_message = "Trouble: Need more text to search! ";
-                $people = [];
-            }
-        }
-
-        // else if 
-
-        // no search terms coming in 
-        else {
-            $first = '';
-            $last = '';
-            $production = '';
-            $people = [];
-        }
-
+            } 
+    //    }
 
 
 
@@ -145,9 +131,9 @@ class WirtzShow
                 'first' => $first ?? '',
                 'last' => $last ?? '',
                 'team' => $team ?? '',
-                'production' => $production,
+                'production' => $production ?? '',
                 'error' => $error_message ?? '',
-                'people' => $people,
+                'people' => $people ?? [],
                 '_get' => array_map('sanitize_text_field', $_GET ?? []),
                 'returnPage' => $currentUrl = $_SERVER['REQUEST_URI'],
             ]

@@ -31,58 +31,33 @@
 {% endif %}
 
 <p>
-<form action="{{ returnPage }}" method="get">
+<form action="{{ returnPage }}" method="get" id="searchform" name="searchform">
 
 
     <table>
-        <tr>
-            <td width="20%">
-                <label for="first">First Name:</label>
-            </td>
-            <td>
-                <input type="text" id="first" name="first" value="{{ first is defined ? first : '' }}"
-                    placeholder="Search first name" aria-label="Search by first name">
-                <button type="button" aria-label="Clear first name field"
-                    onclick="updateQueryParam('first','')">Clear</button>
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <label for="last">Last Name:</label>
-            </td>
-            <td>
-                <input type="text" id="last" name="last" value="{{ last|default('') }}" placeholder="Search last name"
-                    aria-label="Search by last name">
-                <button type="button" onclick="updateQueryParam('last','')"
-                    aria-label="Clear last name field">Clear</button>
+        {% set fields = [
+        {'id': 'first', 'label': 'First Name', 'value': first is defined ? first : ''},
+        {'id': 'last', 'label': 'Last Name', 'value': last|default('')},
+        {'id': 'production', 'label': 'Production', 'value': production|default('')},
+        {'id': 'team', 'label': 'Team', 'value': team|default('')}
+        ] %}
 
-            </td>
-        </tr>
+        {% for field in fields %}
         <tr>
-            <td>
-                <label for="production">Production:</label>
+            <td {% if loop.first %}width="20%" {% endif %}>
+                <label for="{{ field.id }}">{{ field.label }}:</label>
             </td>
             <td>
-                <input type="text" id="production" name="production" value="{{ production|default('') }}"
-                    placeholder="Search by Production" aria-label="Search by production name">
-                <button type="button" onclick="updateQueryParam('production','')"
-                    aria-label="Clear production field">Clear</button>
-
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <label for="team">Team:</label>
-            </td>
-            <td>
-                <input type="text" id="team" name="team" value="{{ team|default('') }}" placeholder="Search by Team"
-                    aria-label="Search by team">
-                <button type="button" onclick="updateQueryParam('team','')"
-                    aria-label="Clear team field">Clear</button>
+                <input type="text" id="{{ field.id }}" name="{{ field.id }}" value="{{ field.value }}"
+                    aria-label="{{ field.label }}"
+                    oninput="document.getElementById('{{ field.id }}errormsg').textContent = (this.value.length > 0 && this.value.length < 3) ? 'Must be empty or over 3 letters' : ''">
+                <button type="button" onclick="updateQueryParam('{{ field.id }}','')"
+                    aria-label="Clear {{ field.label|lower }} field">Clear</button>
+                <span id="{{ field.id }}errormsg"></span>
             </td>
         </tr>
+        {% endfor %}
     </table>
-
 
     <!-- 
     Just hiding this for now because we've moved the sorting to JavaScript based click the column headers style.
@@ -94,161 +69,173 @@
         <option value="year">Year</option>
         <option value="production">Production</option>
     </select> -->
+    <button aria-label="Clear the form" onclick="clearForm()">Clear Form</button>
+  
     <input type="submit" value="Submit" aria-label="Submit the form">
-</form>
 
 
 
-<h3>Search Results</h3>
+    <h3>Search Results</h3>
 
-<p>There are {{ people|length }} records from this search.</p>
-
-
-<style>
-    th.sorted {
-        background-color: #d0e0f0;
-    }
-
-    td.sorted {
-        background-color: #f0f8ff;
-    }
-</style>
-
-<table>
-    <thead>
-        <tr style="background-color: gray;">
-            <th>First</th>
-            <th>Last</th>
-            <th>Team</th>
-            <th>Role</th>
-            <th>Grad</th>
-            <th>Career</th>
-            <th>Year</th>
-            <th>Prod</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for person in people %}
-        {% set color = loop.index0 is even ? 'white' : 'lightgray' %}
-        <tr style="background-color: {{ color }};">
-            <td>{{ person.First }}</td>
-            <td>{{ person.Last }}</td>
+    <p>There are {{ people|length }} records from this search.</p>
 
 
+    <style>
+        th.sorted {
+            background-color: #d0e0f0;
+        }
 
-            <td>
-                {% if person.Team %}
-                <a href="#" onclick="updateQueryParam('team', '{{ person.Team | e('js') }}')">{{ person.Team }}</a>
-                {% else %}
-                &nbsp;
-                {% endif %}
-            </td>
+        td.sorted {
+            background-color: #f0f8ff;
+        }
+    </style>
+
+    <table id="data">
+        <thead>
+            <tr style="background-color: gray;">
+                <th>First</th>
+                <th>Last</th>
+                <th>Team</th>
+                <th>Role</th>
+                <th>Grad</th>
+                <th>Career</th>
+                <th>Year</th>
+                <th>Prod</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for person in people %}
+            {% set color = loop.index0 is even ? 'white' : 'lightgray' %}
+            <tr style="background-color: {{ color }};">
+                <td>{{ person.First }}</td>
+                <td>{{ person.Last }}</td>
 
 
 
-            <td>{{ person.Role }}</td>
-            <td>{{ person.Grad }}</td>
-            <td>{{ person.Career }}</td>
-            <td>{{ person.Year }}</td>
-
-
-            <td>
-                {% if person.Production %}
-                <a href="#" onclick="updateQueryParam('production', '{{ person.Production|e('js') }}')">{{
-                    person.Production }}</a>
-                {% else %}
-                &nbsp;
-                {% endif %}
-            </td>
-
-
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
+                <td>
+                    {% if person.Team %}
+                    <a href="#" onclick="updateQueryParam('team', '{{ person.Team | e('js') }}')">{{ person.Team }}</a>
+                    {% else %}
+                    &nbsp;
+                    {% endif %}
+                </td>
 
 
 
+                <td>{{ person.Role }}</td>
+                <td>{{ person.Grad }}</td>
+                <td>{{ person.Career }}</td>
+                <td>{{ person.Year }}</td>
 
-<script>
-    /* 
-     A generic function which uses window.location.href And with a fine tune scalpel, instead of a 
-     bludgeon hammer just changed that one query string value.
-    */
-    function updateQueryParam(key, value) {
-        const url = new URL(window.location.href);
-        url.searchParams.set(key, value);
-        window.location.href = url.toString();
-    }
-</script>
+
+                <td>
+                    {% if person.Production %}
+                    <a href="#" onclick="updateQueryParam('production', '{{ person.Production|e('js') }}')">{{
+                        person.Production }}</a>
+                    {% else %}
+                    &nbsp;
+                    {% endif %}
+                </td>
+
+
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 
 
 
 
-<script>
-    // Wait for the page to fully load before running this code
-    document.addEventListener('DOMContentLoaded', function () {
-        // Helper function to get the text content from a table cell
-        const getCellValue = (tr, idx) => tr.children[idx].innerText || tr.children[idx].textContent;
+    <script>
+        /* 
+         A generic function which uses window.location.href And with a fine tune scalpel, instead of a 
+         bludgeon hammer just changed that one query string value.
+        */
+        function updateQueryParam(key, value) {
+            const url = new URL(window.location.href);
+            url.searchParams.set(key, value);
+            window.location.href = url.toString();
+        }
+    </script>
 
-        // Function to compare two values for sorting
-        // Handles both numbers and text
-        const comparer = (idx, asc) => (a, b) => ((v1, v2) =>
-            v1 !== '' && v2 !== '' && !isNaN(v1) && !isNaN(v2) ?
-                v1 - v2 : v1.toString().localeCompare(v2)
-        )(getCellValue(asc ? a : b, idx), getCellValue(asc ? b : a, idx));
 
-        // Remove sort arrows and highlighting from previous sorts
-        const clearIndicators = (thElements, table) => {
-            thElements.forEach(th => {
-                th.innerText = th.innerText.replace(/[\u2191\u2193]/g, '').trim();
-                th.classList.remove('sorted');
-            });
-            table.querySelectorAll('td').forEach(td => td.classList.remove('sorted'));
-        };
 
-        // Add click handlers to all table headers
-        document.querySelectorAll('th').forEach((th, index) => {
-            // Make headers look clickable
-            th.style.cursor = 'pointer';
 
-            // What happens when header is clicked
-            th.addEventListener('click', function () {
-                // Find the table and its body
-                const table = th.closest('table');
-                const tbody = table.querySelector('tbody') || table;
-                const ths = Array.from(th.parentNode.children);
+    <script>
+        // Wait for the page to fully load before running this code
+        document.addEventListener('DOMContentLoaded', function () {
+            // Helper function to get the text content from a table cell
+            const getCellValue = (tr, idx) => tr.children[idx].innerText || tr.children[idx].textContent;
 
-                // Toggle sort direction
-                const asc = !this.asc;
-                this.asc = asc;
+            // Function to compare two values for sorting
+            // Handles both numbers and text
+            const comparer = (idx, asc) => (a, b) => ((v1, v2) =>
+                v1 !== '' && v2 !== '' && !isNaN(v1) && !isNaN(v2) ?
+                    v1 - v2 : v1.toString().localeCompare(v2)
+            )(getCellValue(asc ? a : b, idx), getCellValue(asc ? b : a, idx));
 
-                // Clear old sort indicators
-                clearIndicators(ths, table);
+            // Remove sort arrows and highlighting from previous sorts
+            const clearIndicators = (thElements, table) => {
+                thElements.forEach(th => {
+                    th.innerText = th.innerText.replace(/[\u2191\u2193]/g, '').trim();
+                    th.classList.remove('sorted');
+                });
+                table.querySelectorAll('td').forEach(td => td.classList.remove('sorted'));
+            };
 
-                // Add arrow to show sort direction
-                th.innerText = th.innerText.trim() + (asc ? ' ↑' : ' ↓');
-                th.classList.add('sorted');
+            // Add click handlers to all table headers
+            document.querySelectorAll('th').forEach((th, index) => {
+                // Make headers look clickable
+                th.style.cursor = 'pointer';
 
-                // Sort the table rows
-                Array.from(tbody.querySelectorAll('tr'))
-                    .sort(comparer(index, asc))
-                    .forEach(tr => {
-                        // Move rows to new positions
-                        tbody.appendChild(tr);
-                        // Highlight sorted column
-                        tr.querySelectorAll('td').forEach((td, i) => {
-                            if (i === index) td.classList.add('sorted');
+                // What happens when header is clicked
+                th.addEventListener('click', function () {
+                    // Find the table and its body
+                    const table = th.closest('table');
+                    const tbody = table.querySelector('tbody') || table;
+                    const ths = Array.from(th.parentNode.children);
+
+                    // Toggle sort direction
+                    const asc = !this.asc;
+                    this.asc = asc;
+
+                    // Clear old sort indicators
+                    clearIndicators(ths, table);
+
+                    // Add arrow to show sort direction
+                    th.innerText = th.innerText.trim() + (asc ? ' ↑' : ' ↓');
+                    th.classList.add('sorted');
+
+                    // Sort the table rows
+                    Array.from(tbody.querySelectorAll('tr'))
+                        .sort(comparer(index, asc))
+                        .forEach(tr => {
+                            // Move rows to new positions
+                            tbody.appendChild(tr);
+                            // Highlight sorted column
+                            tr.querySelectorAll('td').forEach((td, i) => {
+                                if (i === index) td.classList.add('sorted');
+                            });
                         });
-                    });
+                });
             });
         });
-    });
-</script>
+    </script>
 
 
-
-
-
-
-</p>
+  <script>
+        function clearForm() {
+            // Clear all input fields
+            document.querySelectorAll('input[type="text"]').forEach(input => {
+                input.value = '';
+            });
+            // Clear error messages
+            document.querySelectorAll('[id$="errormsg"]').forEach(span => {
+                span.textContent = '';
+            });
+            // Clear table data
+            document.querySelector('#data tbody').innerHTML = '';
+            // Redirect to base URL
+            window.location = '{{ returnPage|split('?')[0] }}';
+        }
+    </script>
