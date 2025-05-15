@@ -221,15 +221,31 @@ class WirtzData
      * @param string $sort The sort order - 'production', 'last', 'year' or defaults to first name
      * @return array An array of matching people, sorted according to the sort parameter
      */
-    public function doSearch($first, $last, $production, $team, $sort)
+    public function doSearch($first, $last, $production, $team, $role)
     {
+
+        // We're just gonna default sorting by the last name
+        $sort = 'Last';
+
+        // log who is searching what
+        wirtzdata_log(sprintf(
+            "doSearch is searching on [%s], [%s], [%s], [%s], [%s]",
+            esc_sql($first),
+            esc_sql($last),
+            esc_sql($production),
+            esc_sql($team),
+            esc_sql($role)
+        ));
+
+
         $terms = array_map('strtolower', compact('first', 'last', 'production'));
 
-        $result = array_filter($this->getData(), function ($row) use ($terms, $team) {
+        $result = array_filter($this->getData(), function ($row) use ($terms, $team, $role) {
             return (!$terms['first'] || stripos($row['First'], $terms['first']) !== false) &&
                 (!$terms['last'] || stripos($row['Last'], $terms['last']) !== false) &&
                 (!$terms['production'] || stripos($row['Production'], $terms['production']) !== false) &&
-                (!$team || stripos($row['Team'], $team) !== false);
+                (!$team || stripos($row['Team'], $team) !== false) &&
+                (!$role || stripos($row['Role'], $role) !== false);
         });
 
 

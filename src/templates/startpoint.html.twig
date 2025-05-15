@@ -21,6 +21,33 @@
         width: 1000px;
         border: 1px solid red;
     }
+
+
+    .otherbutton {
+        color: rgb(255, 255, 255);
+        text-align: center;
+        text-transform: uppercase;
+        cursor: pointer;
+        -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+        display: inline-block;
+        vertical-align: middle;
+        transform: translateZ(0px);
+        box-shadow: rgba(0, 0, 0, 0) 0px 0px 1px;
+        backface-visibility: hidden;
+        position: relative;
+        transition-property: color;
+        transition-duration: 0.2s;
+        min-width: 165px;
+        font: 16px "Akkurat Pro Bold", "Arial Black", sans-serif;
+        background: darkolivegreen;
+        text-decoration: none;
+        margin: 0px 0.5em 0.5em 0px;
+        padding: 0.8em 1em 0.7em;
+        border-width: initial;
+        border-style: none;
+        border-color: initial;
+        border-image: initial;
+    }
 </style>
 
 
@@ -39,7 +66,8 @@
         {'id': 'first', 'label': 'First Name', 'value': first is defined ? first : ''},
         {'id': 'last', 'label': 'Last Name', 'value': last|default('')},
         {'id': 'production', 'label': 'Production', 'value': production|default('')},
-        {'id': 'team', 'label': 'Team', 'value': team|default('')}
+        {'id': 'team', 'label': 'Team', 'value': team|default('')},
+        {'id': 'role', 'label': 'Role', 'value': role|default('')}
         ] %}
 
         {% for field in fields %}
@@ -69,8 +97,8 @@
         <option value="year">Year</option>
         <option value="production">Production</option>
     </select> -->
-    <input type=button aria-label="Clear the form" onclick="clearForm()" value="Clear"/>
-  
+    <input type=button aria-label="Clear the form" onclick="clearForm()" class=otherbutton value="Clear Form" />
+
     <input type="submit" value="Submit" aria-label="Submit the form">
 
 
@@ -122,7 +150,13 @@
 
 
 
-                <td>{{ person.Role }}</td>
+                <td>
+                    {% if person.Role %}
+                    <a href="#" onclick="updateQueryParam('role', '{{ person.Role | e('js') }}')">{{ person.Role }}</a>
+                    {% else %}
+                    &nbsp;
+                    {% endif %}
+                </td>
                 <td>{{ person.Grad }}</td>
                 <td>{{ person.Career }}</td>
                 <td>{{ person.Year }}</td>
@@ -223,19 +257,17 @@
     </script>
 
 
-  <script>
+    <script>
         function clearForm() {
             // Clear all input fields
             document.querySelectorAll('input[type="text"]').forEach(input => {
                 input.value = '';
             });
-            // Clear error messages
-            document.querySelectorAll('[id$="errormsg"]').forEach(span => {
-                span.textContent = '';
-            });
+          
             // Clear table data
             document.querySelector('#data tbody').innerHTML = '';
+
             // Redirect to base URL
-            window.location = '{{ returnPage|split('?')[0] }}';
+            //window.location = '{{ returnPage|split(' ? ')[0] }}';
         }
     </script>

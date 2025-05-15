@@ -100,26 +100,27 @@ class WirtzShow
         $this->userAuthCheck();
 
 
-       // if (isset($_GET['first']) || isset($_GET['last']) || isset($_GET['production']) || isset($_GET['team'])) {
 
-            // Sanitize and validate input parameters, converting 0 values to empty strings
-            $first      = ($temp = sanitize_text_field(wp_unslash(trim($_GET['first'] ?? '')))) == 0 ? '' : $temp;
-            $last       = ($temp = sanitize_text_field(wp_unslash(trim($_GET['last'] ?? '')))) == 0 ? '' : $temp;
-            $production = ($temp = sanitize_text_field(wp_unslash(trim($_GET['production'] ?? '')))) == 0 ? '' : $temp;
-            $team       = ($temp = sanitize_text_field(wp_unslash(trim($_GET['team'] ?? '')))) == 0 ? '' : $temp;
+        // Sanitize and validate input parameters, converting 0 values to empty strings
+        $first      = ($temp = sanitize_text_field(wp_unslash(trim($_GET['first'] ?? '')))) == 0 ? '' : $temp;
+        $last       = ($temp = sanitize_text_field(wp_unslash(trim($_GET['last'] ?? '')))) == 0 ? '' : $temp;
+        $production = ($temp = sanitize_text_field(wp_unslash(trim($_GET['production'] ?? '')))) == 0 ? '' : $temp;
+        $team       = ($temp = sanitize_text_field(wp_unslash(trim($_GET['team'] ?? '')))) == 0 ? '' : $temp;
+        $role       = ($temp = sanitize_text_field(wp_unslash(trim($_GET['role'] ?? '')))) == 0 ? '' : $temp;
 
-            // Check if first and last names are longer than 3 characters Before calling the main search selection. Note that
-            // The default search is now last name.
-            if (strlen($first) > 2 || strlen($last) > 2 || strlen($production) > 4 || strlen($team) > 4) {
-                $people = $this->wirtz_data->doSearch(
-                    $first,
-                    $last,
-                    $production,
-                    $team,
-                    sanitize_text_field(wp_unslash($_GET['sort'] ?? 'Last')),
-                );
-            } 
-    //    }
+
+
+        // Check if first and last names are longer than 3 characters Before calling the main search selection. Note that
+        // The default search is now last name.
+        if (strlen($first) > 2 || strlen($last) > 2 || strlen($production) > 4 || strlen($team) > 3 || strlen($role) > 3) {
+            $people = $this->wirtz_data->doSearch(
+                $first,
+                $last,
+                $production,
+                $team,
+                $role
+            );
+        } 
 
 
 
@@ -127,11 +128,11 @@ class WirtzShow
         return $this->twig->render(
             'startpoint.html.twig',
             [
-                sanitize_text_field(wp_unslash($_GET['sort'] ?? '')),
                 'first' => $first ?? '',
                 'last' => $last ?? '',
                 'team' => $team ?? '',
                 'production' => $production ?? '',
+                'role' => $role ?? '',
                 'error' => $error_message ?? '',
                 'people' => $people ?? [],
                 '_get' => array_map('sanitize_text_field', $_GET ?? []),

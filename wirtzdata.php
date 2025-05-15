@@ -185,3 +185,13 @@ add_action('admin_notices', function () {
  * and settings functionality.
  */
 require_once 'wirtzdata-settings.php';
+
+/**
+ * Include the logging functionality
+ */
+require_once 'wirtzdata-log.php';
+
+/**
+ * Register activation hook to create the log table
+ */
+register_activation_hook(__FILE__, 'wirtzdata_create_log_table');
