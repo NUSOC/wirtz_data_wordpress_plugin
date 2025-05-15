@@ -42,8 +42,8 @@
             <td>
                 <input type="text" id="first" name="first" value="{{ first is defined ? first : '' }}"
                     placeholder="Search first name" aria-label="Search by first name">
-                <button type="button" onclick="document.getElementById('first').value=''"
-                    aria-label="Clear first name field">Clear</button>
+                <button type="button" aria-label="Clear first name field"
+                    onclick="updateQueryParam('first','')">Clear</button>
             </td>
         </tr>
         <tr>
@@ -53,7 +53,7 @@
             <td>
                 <input type="text" id="last" name="last" value="{{ last|default('') }}" placeholder="Search last name"
                     aria-label="Search by last name">
-                <button type="button" onclick="document.getElementById('last').value=''"
+                <button type="button" onclick="updateQueryParam('last','')"
                     aria-label="Clear last name field">Clear</button>
 
             </td>
@@ -65,7 +65,7 @@
             <td>
                 <input type="text" id="production" name="production" value="{{ production|default('') }}"
                     placeholder="Search by Production" aria-label="Search by production name">
-                <button type="button" onclick="document.getElementById('production').value=''"
+                <button type="button" onclick="updateQueryParam('production','')"
                     aria-label="Clear production field">Clear</button>
 
             </td>
@@ -77,7 +77,7 @@
             <td>
                 <input type="text" id="team" name="team" value="{{ team|default('') }}" placeholder="Search by Team"
                     aria-label="Search by team">
-                <button type="button" onclick="document.getElementById('team').value=''"
+                <button type="button" onclick="updateQueryParam('team','')"
                     aria-label="Clear team field">Clear</button>
             </td>
         </tr>
@@ -171,6 +171,10 @@
 
 
 <script>
+    /* 
+     A generic function which uses window.location.href And with a fine tune scalpel, instead of a 
+     bludgeon hammer just changed that one query string value.
+    */
     function updateQueryParam(key, value) {
         const url = new URL(window.location.href);
         url.searchParams.set(key, value);
