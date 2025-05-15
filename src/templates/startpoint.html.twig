@@ -133,28 +133,53 @@
         <tr style="background-color: {{ color }};">
             <td>{{ person.First }}</td>
             <td>{{ person.Last }}</td>
+
+
+
             <td>
                 {% if person.Team %}
-                <a href="{{ returnPage }}?{{ _get|merge({'team': person.Team})|url_encode }}">{{ person.Team }}</a>
+                <a href="#" onclick="updateQueryParam('team', '{{ person.Team | e('js') }}')">{{ person.Team }}</a>
                 {% else %}
                 &nbsp;
                 {% endif %}
             </td>
+
+
+
             <td>{{ person.Role }}</td>
             <td>{{ person.Grad }}</td>
             <td>{{ person.Career }}</td>
             <td>{{ person.Year }}</td>
+
+
             <td>
                 {% if person.Production %}
-                <a href="{{ returnPage }}?production={{ person.Production|url_encode }}">{{ person.Production }}</a>
+                <a href="#" onclick="updateQueryParam('production', '{{ person.Production|e('js') }}')">{{
+                    person.Production }}</a>
                 {% else %}
                 &nbsp;
                 {% endif %}
             </td>
+
+
         </tr>
         {% endfor %}
     </tbody>
 </table>
+
+
+
+
+<script>
+    function updateQueryParam(key, value) {
+        const url = new URL(window.location.href);
+        url.searchParams.set(key, value);
+        window.location.href = url.toString();
+    }
+</script>
+
+
+
 
 <script>
     // Wait for the page to fully load before running this code
@@ -182,21 +207,21 @@
         document.querySelectorAll('th').forEach((th, index) => {
             // Make headers look clickable
             th.style.cursor = 'pointer';
-            
+
             // What happens when header is clicked
             th.addEventListener('click', function () {
                 // Find the table and its body
                 const table = th.closest('table');
                 const tbody = table.querySelector('tbody') || table;
                 const ths = Array.from(th.parentNode.children);
-                
+
                 // Toggle sort direction
                 const asc = !this.asc;
                 this.asc = asc;
 
                 // Clear old sort indicators
                 clearIndicators(ths, table);
-                
+
                 // Add arrow to show sort direction
                 th.innerText = th.innerText.trim() + (asc ? ' ↑' : ' ↓');
                 th.classList.add('sorted');
