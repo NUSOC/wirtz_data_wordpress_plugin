@@ -105,7 +105,7 @@
 
     <h3>Search Results</h3>
 
-    <p>There are {{ people|length }} records from this search.</p>
+    <p>There are <span id=count>{{ people|length }}</span> records from this search.</p>
 
 
     <style>
@@ -266,6 +266,9 @@
           
             // Clear table data
             document.querySelector('#data tbody').innerHTML = '';
+
+            // clear 
+            document.querySelector('span#count').innerHTML='0';
 
             // Redirect to base URL
             //window.location = '{{ returnPage|split(' ? ')[0] }}';
