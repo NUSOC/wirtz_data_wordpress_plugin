@@ -27,7 +27,6 @@ class WirtzShow
 
         // run basic checks to ensure data is set up
         $this->checks();
-
     }
 
 
@@ -41,7 +40,8 @@ class WirtzShow
      * @return bool|void Returns true if all users allowed, void otherwise
      * @throws \WPDieException If user's NetID is not authorized
      */
-    public function userAuthCheck() {
+    public function userAuthCheck()
+    {
 
         // Check if the user is logged in
         if (!is_user_logged_in()) {
@@ -52,7 +52,7 @@ class WirtzShow
 
 
         // If wirtz_data_allow_all_netids is checked just return
-        if(get_option('wirtz_data_allow_all_netids')) {
+        if (get_option('wirtz_data_allow_all_netids')) {
             return true;
         }
 
@@ -66,8 +66,6 @@ class WirtzShow
             // NetID is not allowed, show an error message
             wp_die("You do not have permission to access this page.");
         }
-
-        
     }
 
     public function checks()
@@ -101,33 +99,33 @@ class WirtzShow
         // check if user is logged in and has access
         $this->userAuthCheck();
 
-        
+
         if (isset($_GET['first']) || isset($_GET['last']) || isset($_GET['production']) || isset($_GET['team'])) {
-           
+
             // Sanitize and validate input parameters, converting 0 values to empty strings
             $first      = ($temp = sanitize_text_field(wp_unslash(trim($_GET['first'] ?? '')))) == 0 ? '' : $temp;
             $last       = ($temp = sanitize_text_field(wp_unslash(trim($_GET['last'] ?? '')))) == 0 ? '' : $temp;
             $production = ($temp = sanitize_text_field(wp_unslash(trim($_GET['production'] ?? '')))) == 0 ? '' : $temp;
             $team       = ($temp = sanitize_text_field(wp_unslash(trim($_GET['team'] ?? '')))) == 0 ? '' : $temp;
 
-            // Check if first and last names are longer than 3 characters
+            // Check if first and last names are longer than 3 characters Before calling the main search selection. Note that
+            // The default search is now last name.
             if (strlen($first) > 2 || strlen($last) > 2 || strlen($production) > 4 || strlen($team) > 4) {
                 $people = $this->wirtz_data->doSearch(
                     $first,
                     $last,
                     $production,
                     $team,
-                    sanitize_text_field(wp_unslash($_GET['sort'] ?? 'Name')),                );
+                    sanitize_text_field(wp_unslash($_GET['sort'] ?? 'Last')),
+                );
             } else {
                 $error_message = "Trouble: Need more text to search! ";
                 $people = [];
             }
-
-                
-        } 
+        }
 
         // else if 
-        
+
         // no search terms coming in 
         else {
             $first = '';
@@ -143,13 +141,14 @@ class WirtzShow
         return $this->twig->render(
             'startpoint.html.twig',
             [
-                sanitize_text_field(wp_unslash($_GET['sort'] ?? '')),               
+                sanitize_text_field(wp_unslash($_GET['sort'] ?? '')),
                 'first' => $first ?? '',
                 'last' => $last ?? '',
                 'team' => $team ?? '',
                 'production' => $production,
                 'error' => $error_message ?? '',
                 'people' => $people,
+                '_get' => array_map('sanitize_text_field', $_GET ?? []),
                 'returnPage' => $currentUrl = $_SERVER['REQUEST_URI'],
             ]
         );
