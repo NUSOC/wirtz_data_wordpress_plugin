@@ -67,7 +67,7 @@ function wirtzdata_get_logs($args = []) {
     $defaults = [
         'limit' => 100,
         'offset' => 0,
-        'orderby' => 'id',
+        'orderby' => 'when',
         'order' => 'DESC'
     ];
     
@@ -79,3 +79,40 @@ function wirtzdata_get_logs($args = []) {
     
     return $wpdb->get_results($query);
 }
+
+
+
+/**
+ * Schedule daily cleanup of old log entries when WordPress initializes
+ */
+add_action('init', function() {
+    // Schedule the cleanup if not already scheduled
+    if (!wp_next_scheduled('wirtzdata_cleanup_logs')) {
+        wp_schedule_event(time(), 'daily', 'wirtzdata_cleanup_logs');
+    }
+});
+
+/**
+ * Delete old log entries from the database
+ * This runs on the scheduled 'wirtzdata_cleanup_logs' action
+ */
+add_action('wirtzdata_cleanup_logs', function() {
+    global $wpdb;
+    $table_name = $wpdb->prefix . 'wirtz_data_log';
+    
+    // Delete logs older than 6 months
+    $sql = $wpdb->prepare(
+        "DELETE FROM $table_name WHERE `when` < DATE_SUB(NOW(), INTERVAL %d MONTH)",
+        6
+    );
+    
+    $wpdb->query($sql);
+});
+
+/**
+ * Remove scheduled cleanup tasks when plugin is deactivated
+ * This prevents orphaned scheduled tasks from remaining in WordPress
+ */
+register_deactivation_hook(__FILE__, function() {
+    wp_clear_scheduled_hook('wirtzdata_cleanup_logs');
+});
