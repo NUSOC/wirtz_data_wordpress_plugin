@@ -14,6 +14,14 @@ class WirtzShow
 {
     private $twig, $wirtz_data;
 
+    /**
+     * Constructor for WirtzShow class
+     * 
+     * Initializes WirtzData model, sets up Twig template engine with templates directory,
+     * and runs basic data setup checks
+     *
+     * @return void
+     */
     public function __construct()
     {
 
@@ -31,14 +39,11 @@ class WirtzShow
 
 
     /**
-     * Checks user authentication and authorization
+     * Checks user authentication
      * 
      * Verifies if user is logged in and redirects to login page if not.
-     * If wirtz_data_allow_all_netids option is enabled, grants access to all.
-     * Otherwise checks if user's NetID is in the allowed list.
      *
-     * @return bool|void Returns true if all users allowed, void otherwise
-     * @throws \WPDieException If user's NetID is not authorized
+     * @return void
      */
     public function userAuthCheck()
     {
@@ -49,23 +54,7 @@ class WirtzShow
             wp_redirect(wp_login_url());
             exit;
         }
-
-
-        // If wirtz_data_allow_all_netids is checked just return
-        if (get_option('wirtz_data_allow_all_netids')) {
-            return true;
-        }
-
-        // Get the current user's NetID
-        $current_user = wp_get_current_user();
-        $netid = $current_user->user_login;
-
-        // Check if the NetID is allowed
-        $allowed_net_ids = explode(',', get_option('wirtz_allowed_net_id'));
-        if (!in_array($netid, $allowed_net_ids)) {
-            // NetID is not allowed, show an error message
-            wp_die("You do not have permission to access this page.");
-        }
+        
     }
 
     public function checks()
@@ -78,11 +67,7 @@ class WirtzShow
             wp_die($error_message);
         }
 
-        // is there a list in get_option('allowed_net_id')
-        if (count(explode(',', get_option('wirtz_allowed_net_id'))) == 1 && get_option('wirtz_allowed_net_id') == '') {
-            $error_message = "Trouble: No NetIDs set in the settings page.";
-            wp_die($error_message);
-        }
+ 
     }
 
     /**
