@@ -125,13 +125,14 @@
         </thead>
         <tbody>
             {% for person in people %}
-            {% set color = loop.index0 is even ? 'white' : 'lightgray' %}
-            <tr style="background-color: {{ color }};">
-               
-               
+
+            <tr>
+
+
                 <td>
                     {% if person.First %}
-                    <a href="#" onclick="updateQueryParam('first', '{{ person.First | e('js') }}')">{{ person.First }}</a>
+                    <a href="#" onclick="updateQueryParam('first', '{{ person.First | e('js') }}')">{{ person.First
+                        }}</a>
                     {% else %}
                     &nbsp;
                     {% endif %}
@@ -200,70 +201,71 @@
 
 
     <script>
-    // Wait for the page to fully load before running this code
-    document.addEventListener('DOMContentLoaded', function () {
-        // Helper function to get the text content from a table cell
-        const getCellValue = (tr, idx) => tr.children[idx].innerText || tr.children[idx].textContent;
+        // Wait for the page to fully load before running this code
+        document.addEventListener('DOMContentLoaded', function () {
+            
+            // Helper function to get the text content from a table cell
+            const getCellValue = (tr, idx) => tr.children[idx].innerText || tr.children[idx].textContent;
 
-        // Function to compare two values for sorting
-        // Handles both numbers and text
-        const comparer = (idx, asc) => (a, b) => ((v1, v2) =>
-            v1 !== '' && v2 !== '' && !isNaN(v1) && !isNaN(v2) ?
-                v1 - v2 : v1.toString().localeCompare(v2)
-        )(getCellValue(asc ? a : b, idx), getCellValue(asc ? b : a, idx));
+            // Function to compare two values for sorting
+            // Handles both numbers and text
+            const comparer = (idx, asc) => (a, b) => ((v1, v2) =>
+                v1 !== '' && v2 !== '' && !isNaN(v1) && !isNaN(v2) ?
+                    v1 - v2 : v1.toString().localeCompare(v2)
+            )(getCellValue(asc ? a : b, idx), getCellValue(asc ? b : a, idx));
 
-        // Remove sort arrows and highlighting from previous sorts
-        const clearIndicators = (thElements, table) => {
-            thElements.forEach(th => {
-                th.innerText = th.innerText.replace(/[\u2191\u2193]/g, '').trim();
-                th.classList.remove('sorted');
-            });
-            table.querySelectorAll('td').forEach(td => td.classList.remove('sorted'));
-        };
+            // Remove sort arrows and highlighting from previous sorts
+            const clearIndicators = (thElements, table) => {
+                thElements.forEach(th => {
+                    th.innerText = th.innerText.replace(/[\u2191\u2193]/g, '').trim();
+                    th.classList.remove('sorted');
+                });
+                table.querySelectorAll('td').forEach(td => td.classList.remove('sorted'));
+            };
 
-        // Add click handlers to all table headers
-        document.querySelectorAll('th').forEach((th, index) => {
-            // Make headers look clickable
-            th.style.cursor = 'pointer';
+            // Add click handlers to all table headers
+            document.querySelectorAll('th').forEach((th, index) => {
+                // Make headers look clickable
+                th.style.cursor = 'pointer';
 
-            // What happens when header is clicked
-            th.addEventListener('click', function () {
-                // Find the table and its body
-                const table = th.closest('table');
-                const tbody = table.querySelector('tbody') || table;
-                const ths = Array.from(th.parentNode.children);
+                // What happens when header is clicked
+                th.addEventListener('click', function () {
+                    // Find the table and its body
+                    const table = th.closest('table');
+                    const tbody = table.querySelector('tbody') || table;
+                    const ths = Array.from(th.parentNode.children);
 
-                // Toggle sort direction
-                const asc = !this.asc;
-                this.asc = asc;
+                    // Toggle sort direction
+                    const asc = !this.asc;
+                    this.asc = asc;
 
-                // Clear old sort indicators
-                clearIndicators(ths, table);
+                    // Clear old sort indicators
+                    clearIndicators(ths, table);
 
-                // Add arrow to show sort direction
-                th.innerText = th.innerText.trim() + (asc ? ' ↑' : ' ↓');
-                th.classList.add('sorted');
+                    // Add arrow to show sort direction
+                    th.innerText = th.innerText.trim() + (asc ? ' ↑' : ' ↓');
+                    th.classList.add('sorted');
 
-                // Sort the table rows
-                Array.from(tbody.querySelectorAll('tr'))
-                    .sort(comparer(index, asc))
-                    .forEach(tr => {
-                        // Move rows to new positions
-                        tbody.appendChild(tr);
-                        // Highlight sorted column
-                        tr.querySelectorAll('td').forEach((td, i) => {
-                            if (i === index) td.classList.add('sorted');
+                    // Sort the table rows
+                    Array.from(tbody.querySelectorAll('tr'))
+                        .sort(comparer(index, asc))
+                        .forEach(tr => {
+                            // Move rows to new positions
+                            tbody.appendChild(tr);
+                            // Highlight sorted column
+                            tr.querySelectorAll('td').forEach((td, i) => {
+                                if (i === index) td.classList.add('sorted');
+                            });
                         });
-                    });
+                });
             });
-        });
 
-        // Trigger initial sort on Last Name column (index 1) in ascending order
-        const lastNameHeader = document.querySelectorAll('th')[1];
-        lastNameHeader.asc = false; // Set to false so the click will make it true (ascending)
-        lastNameHeader.click();
-    });
-</script>
+            // Trigger initial sort on Last Name column (index 1) in ascending order
+            const lastNameHeader = document.querySelectorAll('th')[1];
+            lastNameHeader.asc = false; // Set to false so the click will make it true (ascending)
+            lastNameHeader.click();
+        });
+    </script>
 
     <script>
         function clearForm() {
@@ -271,12 +273,12 @@
             document.querySelectorAll('input[type="text"]').forEach(input => {
                 input.value = '';
             });
-          
+
             // Clear table data
             document.querySelector('#data tbody').innerHTML = '';
 
             // clear 
-            document.querySelector('span#count').innerHTML='0';
+            document.querySelector('span#count').innerHTML = '0';
 
             // Redirect to base URL
             //window.location = '{{ returnPage|split(' ? ')[0] }}';
