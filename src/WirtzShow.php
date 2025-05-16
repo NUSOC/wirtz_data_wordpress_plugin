@@ -140,9 +140,9 @@ class WirtzShow
     {
 
 
-        // get year from query string if needed
-        $currentyear = wp_kses(trim($_GET['currentyear'] ?? ''), "");
-
+        // get year from query string if needed and sanitize it
+        $currentyear = sanitize_text_field(wp_unslash(trim($_GET['currentyear'] ?? '')));
+        
         // if $year is empty do nothing. If not empty, get the plays for that year
         if ($currentyear != '') {
             $plays = $this->wirtz_data->getPlaysfromYear($currentyear);

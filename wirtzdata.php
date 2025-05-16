@@ -11,27 +11,7 @@
 // Include the Composer autoload file
 require_once __DIR__ . '/vendor/autoload.php';
 
-/**
- * Bootstrap function for the Wirtz Data plugin
- * 
- * Checks if the current page is appropriate for running the plugin functionality.
- * Returns early with an empty string if on front page, home page, archive page,
- * or in admin area.
- *
- * @return string Empty string if conditions are not met for plugin execution
- */
-function writzdata_bootstrap()
-{
-    // If on the front page or home page, return an empty string
-    if (is_front_page() || is_home() || is_archive()) {
-        return '';
-    }
 
-    // only run if not in admin
-    if (is_admin()) {
-        return '';
-    }
-}
 
 
 
@@ -65,8 +45,7 @@ add_shortcode('wirtzdata', function () {
             </script>
         HTML;
     }
-    // Include the bootstrap file
-    writzdata_bootstrap();
+
 
     // This is the primary hook to include anything in the /src folder
     $wirtzShow = new StackWirtz\WordpressPlugin\WirtzShow();
@@ -81,8 +60,7 @@ add_shortcode('wirtzdata', function () {
  */
 add_shortcode('wirtzdata_listplays', function () {
 
-    // Include the bootstrap file
-    writzdata_bootstrap();
+
     $wirtzShow = new StackWirtz\WordpressPlugin\WirtzShow();
     return $wirtzShow->listPlaysByYear();
 });
