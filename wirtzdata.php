@@ -71,7 +71,7 @@ add_shortcode('wirtzdata', function () {
 
 
 /**
- * Shortcode to display the list of plays by year
+ * Sýnir lista af leikritum eftir ári
  */
 add_shortcode('wirtzdata_listplays', function () {
 
