@@ -227,19 +227,31 @@ class WirtzData
         // We're just gonna default sorting by the last name
         $sort = 'Last';
 
-        // log who is searching what
+        // Use sanitize_text_field() to safely log search parameters by removing special characters
+        // This provides protection against malicious input in log files
         wirtzdata_log(sprintf(
             "doSearch is searching on [%s], [%s], [%s], [%s], [%s]",
-            esc_sql($first),
-            esc_sql($last),
-            esc_sql($production),
-            esc_sql($team),
-            esc_sql($role)
+            sanitize_text_field($first),
+            sanitize_text_field($last),
+            sanitize_text_field($production),
+            sanitize_text_field($team),
+            sanitize_text_field($role)
         ));
 
 
         $terms = array_map('strtolower', compact('first', 'last', 'production'));
 
+        /**
+         * Filters the data array based on search criteria:
+         * - Checks if first name contains the search term (case insensitive)
+         * - Checks if last name contains the search term (case insensitive) 
+         * - Checks if production name contains the search term (case insensitive)
+         * - Checks if team matches the specified team (case insensitive)
+         * - Checks if role matches the specified role (case insensitive)
+         * 
+         * Each condition is only applied if the corresponding search term is not empty.
+         * Returns rows that match ALL provided search criteria.
+         */
         $result = array_filter($this->getData(), function ($row) use ($terms, $team, $role) {
             return (!$terms['first'] || stripos($row['First'], $terms['first']) !== false) &&
                 (!$terms['last'] || stripos($row['Last'], $terms['last']) !== false) &&
@@ -251,14 +263,8 @@ class WirtzData
 
         // dump($result);
 
-        $sortFields = [
-            'production' => 'Production',
-            'last' => 'Last',
-            'year' => 'Year',
-            'first' => 'First'
-        ];
-
-        $field = $sortFields[$sort] ?? 'First';
+       // default to Last
+        $field = 'Last';
         usort($result, function ($a, $b) use ($field) {
             return strcasecmp($a[$field], $b[$field]);
         });
