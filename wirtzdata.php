@@ -35,6 +35,7 @@ function writzdata_bootstrap()
 
 
 
+
 /**
  * Shortcode to display the main search interface form 
  * a the CSV data. 
@@ -42,6 +43,11 @@ function writzdata_bootstrap()
  * @return string The output of the shortcode
  */
 add_shortcode('wirtzdata', function () {
+
+    // Only run on single pages/posts, not in loops or indexes
+    if (!is_singular()) {
+        return '';
+    }
 
     // Check if user is currently logged into WordPress
     // If not authenticated, generate HTML with login URL and JavaScript redirect
@@ -177,6 +183,10 @@ add_action('admin_notices', function () {
 });
 
 
+/**
+ * Register activation hook to create the log table
+ */
+register_activation_hook(__FILE__, 'wirtzdata_create_log_table');
 
 /**
  * Include the plugin settings file
@@ -191,7 +201,14 @@ require_once 'wirtzdata-settings.php';
  */
 require_once 'wirtzdata-log.php';
 
+
+
 /**
- * Register activation hook to create the log table
+ * Include VPN detection JavaScript functionality
+ * 
+ * Loads the wirtzdata-javascript-vpn.php file which contains code to detect
+ * if users are accessing the site through a VPN connection. This helps ensure
+ * proper access control and security measures.
  */
-register_activation_hook(__FILE__, 'wirtzdata_create_log_table');
+include_once 'wirtzdata-javascript-vpn.php';
+
