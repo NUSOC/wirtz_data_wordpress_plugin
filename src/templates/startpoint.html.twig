@@ -87,16 +87,7 @@
         {% endfor %}
     </table>
 
-    <!-- 
-    Just hiding this for now because we've moved the sorting to JavaScript based click the column headers style.
-    <br />
-    <label for="sort">Sort By:</label>
-    <select name="sort" id="" aria-live="polite">
-        <option value="first">First</option>
-        <option value="last">Last</option>
-        <option value="year">Year</option>
-        <option value="production">Production</option>
-    </select> -->
+
     <input type=button aria-label="Clear the form" onclick="clearForm()" class=otherbutton value="Clear Form" />
 
     <input type="submit" value="Submit" aria-label="Submit the form">
@@ -135,10 +126,22 @@
             {% for person in people %}
             {% set color = loop.index0 is even ? 'white' : 'lightgray' %}
             <tr style="background-color: {{ color }};">
-                <td>{{ person.First }}</td>
-                <td>{{ person.Last }}</td>
-
-
+               
+               
+                <td>
+                    {% if person.First %}
+                    <a href="#" onclick="updateQueryParam('first', '{{ person.First | e('js') }}')">{{ person.First }}</a>
+                    {% else %}
+                    &nbsp;
+                    {% endif %}
+                </td>
+                <td>
+                    {% if person.Last %}
+                    <a href="#" onclick="updateQueryParam('last', '{{ person.Last | e('js') }}')">{{ person.Last }}</a>
+                    {% else %}
+                    &nbsp;
+                    {% endif %}
+                </td>
 
                 <td>
                     {% if person.Team %}
