@@ -107,6 +107,8 @@ add_action('wirtzdata_cleanup_logs', function() {
     );
     
     $wpdb->query($sql);
+
+    wirtzdata_log('Old log entries deleted');
 });
 
 /**
