@@ -67,7 +67,9 @@
         {'id': 'last', 'label': 'Last Name', 'value': last|default('')},
         {'id': 'production', 'label': 'Production', 'value': production|default('')},
         {'id': 'team', 'label': 'Team', 'value': team|default('')},
-        {'id': 'role', 'label': 'Role', 'value': role|default('')}
+        {'id': 'role', 'label': 'Role', 'value': role|default('')},
+        {'id': 'career', 'label': 'Career', 'value': career|default('')},
+        {'id': 'grad', 'label': 'Grad', 'value': grad|default('')}
         ] %}
 
         {% for field in fields %}
@@ -162,8 +164,21 @@
                     &nbsp;
                     {% endif %}
                 </td>
-                <td>{{ person.Grad }}</td>
-                <td>{{ person.Career }}</td>
+                <td>
+                    {% if person.Grad %}
+                    <a href="#" onclick="updateQueryParam('grad', '{{ person.Grad | e('js') }}')">{{ person.Grad }}</a>
+                    {% else %}
+                    &nbsp;
+                    {% endif %}
+                </td>
+                <td>
+                    {% if person.Career %}
+                    <a href="#" onclick="updateQueryParam('career', '{{ person.Career | e('js') }}')">{{ person.Career
+                        }}</a>
+                    {% else %}
+                    &nbsp;
+                    {% endif %}
+                </td>
                 <td>{{ person.Year }}</td>
 
 
@@ -203,7 +218,7 @@
     <script>
         // Wait for the page to fully load before running this code
         document.addEventListener('DOMContentLoaded', function () {
-            
+
             // Helper function to get the text content from a table cell
             const getCellValue = (tr, idx) => tr.children[idx].innerText || tr.children[idx].textContent;
 

@@ -92,18 +92,22 @@ class WirtzShow
         $production = ($temp = sanitize_text_field(wp_unslash(trim($_GET['production'] ?? '')))) == 0 ? '' : $temp;
         $team       = ($temp = sanitize_text_field(wp_unslash(trim($_GET['team'] ?? '')))) == 0 ? '' : $temp;
         $role       = ($temp = sanitize_text_field(wp_unslash(trim($_GET['role'] ?? '')))) == 0 ? '' : $temp;
+        $career     = ($temp = sanitize_text_field(wp_unslash(trim($_GET['career'] ?? '')))) == 0 ? '' : $temp;
+        $grad       = ($temp = sanitize_text_field(wp_unslash(trim($_GET['grad'] ?? '')))) == 0 ? '' : $temp;
 
 
 
         // Check if first and last names are longer than 3 characters Before calling the main search selection. Note that
         // The default search is now last name.
-        if (strlen($first) > 2 || strlen($last) > 2 || strlen($production) > 4 || strlen($team) > 3 || strlen($role) > 3) {
+        if (strlen($first) > 2 || strlen($last) > 2 || strlen($production) > 4 || strlen($team) > 3 || strlen($role) > 3 || strlen($career) > 1 || strlen($grad) > 1) {
             $people = $this->wirtz_data->doSearch(
                 $first,
                 $last,
                 $production,
                 $team,
-                $role
+                $role,
+                $career,
+                $grad
             );
         } 
 
@@ -118,6 +122,8 @@ class WirtzShow
                 'team' => $team ?? '',
                 'production' => $production ?? '',
                 'role' => $role ?? '',
+                'career' => $career ?? '',
+                'grad' => $grad ?? '',
                 'error' => $error_message ?? '',
                 'people' => $people ?? [],
                 '_get' => array_map('sanitize_text_field', $_GET ?? []),

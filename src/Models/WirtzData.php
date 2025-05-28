@@ -221,7 +221,7 @@ class WirtzData
      * @param string $sort The sort order - 'production', 'last', 'year' or defaults to first name
      * @return array An array of matching people, sorted according to the sort parameter
      */
-    public function doSearch($first, $last, $production, $team, $role)
+    public function doSearch($first, $last, $production, $team, $role, $career, $grad)
     {
 
         // We're just gonna default sorting by the last name
@@ -230,16 +230,18 @@ class WirtzData
         // Use sanitize_text_field() to safely log search parameters by removing special characters
         // This provides protection against malicious input in log files
         wirtzdata_log(sprintf(
-            "doSearch is searching on [%s], [%s], [%s], [%s], [%s]",
+            "doSearch is searching on [%s], [%s], [%s], [%s], [%s], [%s]",
             sanitize_text_field($first),
             sanitize_text_field($last),
             sanitize_text_field($production),
             sanitize_text_field($team),
-            sanitize_text_field($role)
+            sanitize_text_field($role),
+            sanitize_text_field($career),
+            sanitize_text_field($grad)
         ));
 
 
-        $terms = array_map('strtolower', compact('first', 'last', 'production'));
+        $terms = array_map('strtolower', compact('first', 'last', 'production', 'career', 'grad', 'team', 'role'));
 
         /**
          * Filters the data array based on search criteria:
@@ -248,16 +250,20 @@ class WirtzData
          * - Checks if production name contains the search term (case insensitive)
          * - Checks if team matches the specified team (case insensitive)
          * - Checks if role matches the specified role (case insensitive)
+         * - Checks if career matches the specified career (case insensitive)
+         * - Checks if graduation year matches the specified grad year (case insensitive)
          * 
          * Each condition is only applied if the corresponding search term is not empty.
          * Returns rows that match ALL provided search criteria.
          */
-        $result = array_filter($this->getData(), function ($row) use ($terms, $team, $role) {
+        $result = array_filter($this->getData(), function ($row) use ($terms) {
             return (!$terms['first'] || stripos($row['First'], $terms['first']) !== false) &&
                 (!$terms['last'] || stripos($row['Last'], $terms['last']) !== false) &&
                 (!$terms['production'] || stripos($row['Production'], $terms['production']) !== false) &&
-                (!$team || stripos($row['Team'], $team) !== false) &&
-                (!$role || stripos($row['Role'], $role) !== false);
+                (!$terms['team'] || stripos($row['Team'], $terms['team']) !== false) &&
+                (!$terms['role'] || stripos($row['Role'], $terms['role']) !== false) &&
+                (!$terms['career'] || stripos($row['Career'], $terms['career']) !== false) &&
+                (!$terms['grad'] || stripos($row['Grad'], $terms['grad']) !== false);
         });
 
 

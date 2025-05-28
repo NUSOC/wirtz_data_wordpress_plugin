@@ -1,31 +1,56 @@
-# WirtzData Plugin
+# StackWirtz WordPress Plugin
 
-## Description
-The WirtzData plugin allows users to interact with a Wirtz data archive through a simple shortcode. 
+A WordPress plugin to retrieve data from a CSV file using a shortcode.
 
-## Current ShortCodes
+## Running Tests
 
-`[wirtzdata]` - Name search. Requires that your username/netid be in the `get_option('wirtz_allowed_net_id')`
+This plugin includes unit tests that can be run using WP-CLI. Follow these steps to set up and run the tests:
 
-`[wirtzdata_listplays]` - Lists plays by year
+### 1. Install the WordPress Test Environment
 
-## Installation
-1. Download the plugin files.
-2. Upload the `wirtzdata-plugin` folder to the `/wp-content/plugins/` directory.
-3. Activate the plugin through the 'Plugins' menu in WordPress.
+Run the following command to install the WordPress test environment:
 
-## Usage
-To use the plugin, simply add the shortcode `[wirtzdata]` to any post or page where you want the data to be displayed.
-
-## Configuration
-Congiure before use.
-
-```
-wp-admin/admin.php?page=wirtz-data-settings
+```bash
+./bin/install-wp-tests.sh wordpress_test root password localhost latest
 ```
 
-## Uninstallation
-When you uninstall the plugin, any options or data related to the plugin will be removed. Make sure to back up any important data before uninstalling.
+Replace `wordpress_test` with your test database name, `root` with your database username, and `password` with your database password.
 
-## Support
-For support, please open an issue on the plugin's GitHub repository.
+### 2. Run Tests Using WP-CLI
+
+You can run the tests using WP-CLI with the following command:
+
+```bash
+wp eval-file tests/run-wp-tests.php
+```
+
+Or using the Composer script:
+
+```bash
+composer test-wp
+```
+
+### 3. Run Tests Using PHPUnit Directly
+
+You can also run the tests using PHPUnit directly:
+
+```bash
+./vendor/bin/phpunit
+```
+
+Or using the Composer script:
+
+```bash
+composer test
+```
+
+## Test Structure
+
+- `tests/bootstrap.php`: Sets up the WordPress testing environment
+- `tests/test-wirtz-data.php`: Tests for the WirtzData class
+- `tests/test-wirtz-show.php`: Tests for the WirtzShow class
+- `tests/fixtures/`: Contains test data files
+
+## Adding New Tests
+
+To add new tests, create a new file in the `tests` directory with the prefix `test-`. For example, `test-new-feature.php`. The file should contain a class that extends `WP_UnitTestCase`.
