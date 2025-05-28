@@ -63,13 +63,13 @@
 
     <table>
         {% set fields = [
-        {'id': 'first', 'label': 'First Name', 'value': first is defined ? first : ''},
-        {'id': 'last', 'label': 'Last Name', 'value': last|default('')},
-        {'id': 'production', 'label': 'Production', 'value': production|default('')},
-        {'id': 'team', 'label': 'Team', 'value': team|default('')},
-        {'id': 'role', 'label': 'Role', 'value': role|default('')},
-        {'id': 'career', 'label': 'Career', 'value': career|default('')},
-        {'id': 'grad', 'label': 'Grad', 'value': grad|default('')}
+        {'id': 'first', 'label': 'First Name', 'value': first is defined ? first : '', 'minLength': 3},
+        {'id': 'last', 'label': 'Last Name', 'value': last|default(''), 'minLength': 3}, 
+        {'id': 'production', 'label': 'Production', 'value': production|default(''), 'minLength': 3},
+        {'id': 'team', 'label': 'Team', 'value': team|default(''), 'minLength': 2},
+        {'id': 'role', 'label': 'Role', 'value': role|default(''), 'minLength': 2},
+        {'id': 'career', 'label': 'Career', 'value': career|default(''), 'minLength': 2},
+        {'id': 'grad', 'label': 'Grad', 'value': grad|default(''), 'minLength': 2}
         ] %}
 
         {% for field in fields %}
@@ -80,7 +80,7 @@
             <td>
                 <input type="text" id="{{ field.id }}" name="{{ field.id }}" value="{{ field.value }}"
                     aria-label="{{ field.label }}"
-                    oninput="document.getElementById('{{ field.id }}errormsg').textContent = (this.value.length > 0 && this.value.length < 3) ? 'Must be empty or over 3 letters' : ''">
+                    oninput="document.getElementById('{{ field.id }}errormsg').textContent = (this.value.length > 0 && this.value.length < {{ field.minLength }}) ? 'Must be empty or at least {{ field.minLength }} letters' : ''">
                 <button type="button" onclick="updateQueryParam('{{ field.id }}','')"
                     aria-label="Clear {{ field.label|lower }} field">Clear</button>
                 <span id="{{ field.id }}errormsg"></span>
@@ -88,7 +88,6 @@
         </tr>
         {% endfor %}
     </table>
-
 
     <input type=button aria-label="Clear the form" onclick="clearForm()" class=otherbutton value="Clear Form" />
 
