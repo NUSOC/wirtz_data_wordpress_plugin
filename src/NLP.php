@@ -73,6 +73,15 @@ class NLP
          PREAMBLE;
     }
 
+    /**
+     * Process text through Ollama API for natural language processing
+     *
+     * @param string $text The input text to be processed
+     * @return array Associative array containing:
+     *               - processed_text: The processed response from Ollama
+     *               - status: 'success' or 'error'
+     *               - error: Error message if status is 'error'
+     */
     public function processText($text)
     {
         if (empty($text)) {
