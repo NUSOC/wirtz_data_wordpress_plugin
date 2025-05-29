@@ -67,7 +67,8 @@ class NLP
                 YEAR THE PLAY WAS PRODUCED,  
             Format all output in a JSON object with the following keys: first_name, last_name, stage_play, graduation_year, actor_role, run_year
             If you do not know the value of a field, use "unknown" as the value. Do not include explanatory text in your responses.
-            Do not try to actually answer the question we are mainly concerned with producing this JSON object
+            Do not try to actually answer the question we are mainly concerned with producing this JSON object.
+            You only want to pass the sentence below no other information matters.
          PREAMBLE;
     }
 
@@ -154,7 +155,7 @@ class NLP
             'last' => $result['processed_text']['last_name'] ?? null,
             'production' => $result['processed_text']['stage_play'] ?? null,
             'grad' => $result['processed_text']['graduation_year'] ?? null,
-            'role' => $result['processed_text']['actor_role'] ?? null,
+            'actor_role' => $result['processed_text']['actor_role'] ?? null,
             'run_year' => $result['processed_text']['run_year'] ?? null,
 
 
