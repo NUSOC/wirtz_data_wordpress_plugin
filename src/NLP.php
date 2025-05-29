@@ -47,8 +47,8 @@ class NLP
     public function __construct()
     {
         // Initialize Ollama settings
-        $this->apiEndpoint = 'http://localhost:11434/api/generate';
-        $this->model = 'llama3'; // Default model, can be changed
+        $this->apiEndpoint = get_option('ollama_api_endpoint', 'http://localhost:11434/api/generate');
+        $this->model = get_option('ollama_model', 'llama3'); // Default model, can be changed
 
 
         // get data
@@ -154,7 +154,7 @@ class NLP
             'first' => $result['processed_text']['first_name'] ?? null,
             'last' => $result['processed_text']['last_name'] ?? null,
             'production' => $result['processed_text']['stage_play'] ?? null,
-            'grad' => $result['processed_text']['graduation_year'] ?? null,
+            'graduation_year' => $result['processed_text']['graduation_year'] ?? null,
             'actor_role' => $result['processed_text']['actor_role'] ?? null,
             'run_year' => $result['processed_text']['run_year'] ?? null,
 
