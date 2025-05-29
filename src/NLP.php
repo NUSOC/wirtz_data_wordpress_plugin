@@ -102,6 +102,10 @@ class NLP
      */
     public function processText($text)
     {
+
+        // Add sanitization for input text
+        $text = sanitize_text_field($text);        
+
         if (empty($text)) {
             return [
                 'processed_text' => '',
@@ -115,6 +119,11 @@ class NLP
             'prompt' => $this->queryPreamble . "\n\"\"\"\n" . $text . "\n\"\"\"",
             'stream' => false
         ];
+
+        wirtzdata_log(sprintf(" [%s] [%s] [%s]", [
+            $this->model, 
+            $text
+        ]))
 
 
         try {
