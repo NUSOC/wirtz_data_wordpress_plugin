@@ -67,6 +67,7 @@ class NLP
                 YEAR THE PLAY WAS PRODUCED,  
             Format all output in a JSON object with the following keys: first_name, last_name, stage_play, graduation_year, actor_role, run_year
             If you do not know the value of a field, use "unknown" as the value. Do not include explanatory text in your responses.
+            Play run_year will usually be in school years such as 2020-2021
             Do not try to actually answer the question we are mainly concerned with producing this JSON object.
             You only want to pass the sentence below no other information matters.
          PREAMBLE;
