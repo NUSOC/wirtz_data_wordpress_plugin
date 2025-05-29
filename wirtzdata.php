@@ -89,6 +89,20 @@ add_shortcode('wirtzdata_test', function () {
 });
 
 
+/**
+ * Shortcode to display the NLP interface
+ * 
+ * Creates a shortcode that initializes the NLP class
+ * and displays the NLP interface.
+ *
+ * @return string The rendered NLP interface
+ */
+add_shortcode('wirtzdata_NLP', function () {
+    $nlp = new StackWirtz\WordpressPlugin\NLP();
+    return $nlp->displayNLP();
+});
+
+
 
 
 

@@ -1,0 +1,29 @@
+<form method="post" action="{{ returnPage }}">
+    <textarea name="query" class="form-control" rows="5" style="width:100%"></textarea> </div>
+    <button type="submit" class="btn btn-primary">Query</button>
+</form>
+
+
+
+<P>{{ result }}</P>
+<p>{{ question }} </p>
+
+<table>
+    <tr>
+        <td>Name</td>
+        <td>{{ first }} {{ last }} </td>
+    </tr>
+    <tr>
+        <td>Production</td>
+        <td> {{ production }} </td>
+    </tr>
+    <tr>
+        <td>Graduation Year</td>
+        <td>{{graduation_year}}</td>
+    </tr>
+
+    <tr>
+        <td>Run Year</td>
+        <td>{{run_year}}</td>
+    </tr>
+</table>
