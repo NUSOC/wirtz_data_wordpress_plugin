@@ -123,7 +123,7 @@ class NLP
         wirtzdata_log(sprintf(" [%s] [%s] [%s]", [
             $this->model, 
             $text
-        ]))
+        ]));
 
 
         try {
