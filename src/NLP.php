@@ -120,11 +120,7 @@ class NLP
             'stream' => false
         ];
 
-        wirtzdata_log(sprintf(" [%s] [%s] [%s]", [
-            $this->model, 
-            $text
-        ]));
-
+        sprintf('LLM [%s] [%s]', esc_html($this->model), esc_html($text));
 
         try {
             $response = $this->client->request('POST', $this->apiEndpoint, [
