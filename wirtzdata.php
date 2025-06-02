@@ -209,43 +209,41 @@ include_once 'wirtzdata-javascript-vpn.php';
 
 
 
-/**
- * Initialize URL rewrite functionality for Wirtz search
- * 
- * Sets up URL rewriting to handle the /wirtz/search/forwarded/page endpoint and redirect to the
- * appropriate search page. This creates a clean URL structure for accessing the
- * Wirtz data search functionality. This page is a post or page where the short code
- * [wirtzdata] is found. It goes to the first one.
- *
- * Process:
- * 1. Adds rewrite rule to handle /wirtz/search/forwarded/page URL
- * 2. Registers wirtz_search_redirect query var
- * 3. Handles redirect by:
- *    - Looking for page with [wirtzdata] shortcode
- *    - Redirecting to that page if found
- *    - Falling back to home URL if not found
- *
- * @uses add_rewrite_rule() Add WordPress rewrite rule
- * @uses add_filter() Add filter for query vars
- * @uses get_query_var() Get query variable value
- * @uses get_posts() Get pages containing shortcode
- * @uses wp_redirect() Redirect to appropriate URL
- */
 
-// Register rewrite rules during WordPress init
+
+/**
+ * Skráir endurskrifunarreglur fyrir WordPress init
+ * 
+ * Bætir við sérstakri reglu sem meðhöndlar vefslóðir fyrir leitarniðurstöður.
+ * Þetta gerir kleift að nota sérsniðnar vefslóðir fyrir leitarviðmótið.
+ */
 function wirtzdata_register_rewrites() {
     // Add rewrite rule
     add_rewrite_rule('^wirtz/search/forwarded/page/?$', 'index.php?wirtz_search_redirect=1', 'top');
 }
 add_action('init', 'wirtzdata_register_rewrites');
 
-// Register query var
+/**
+ * Skráir fyrirspurnarbreytu fyrir endurbeiningarkerfi
+ * 
+ * Bætir wirtz_search_redirect við lista yfir leyfðar fyrirspurnarbreytur
+ * sem WordPress getur unnið með.
+ *
+ * @param array $vars Núverandi fyrirspurnarbreytur
+ * @return array Uppfærður listi af fyrirspurnarbreytum
+ */
 add_filter('query_vars', function ($vars) {
     $vars[] = 'wirtz_search_redirect';
     return $vars;
 });
 
-// Handle redirect
+/**
+ * Meðhöndlar endurbeiningarferli fyrir leitarniðurstöður
+ * 
+ * Athugar hvort fyrirspurn innihaldi wirtz_search_redirect breytuna.
+ * Ef svo er, leitar að síðu með [wirtzdata] stuttkóða og 
+ * endurbeinir notanda þangað ásamt öllum leitarskilyrðum.
+ */
 add_action('template_redirect', function () {
     if (get_query_var('wirtz_search_redirect')) {
         $pages = get_posts([
@@ -280,7 +278,12 @@ add_action('template_redirect', function () {
     }
 });
 
-// Flush rewrite rules on plugin activation
+/**
+ * Endurstillir endurskrifunarreglur við virkjun viðbótar
+ * 
+ * Keyrir þegar viðbótin er virkjuð til að tryggja að allar
+ * endurskrifunarreglur séu uppfærðar í WordPress kerfinu.
+ */
 function wirtzdata_flush_rules() {
     wirtzdata_register_rewrites();
     flush_rewrite_rules();
