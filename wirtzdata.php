@@ -60,6 +60,11 @@ add_shortcode('wirtzdata', function () {
  */
 add_shortcode('wirtzdata_listplays', function () {
 
+    // Only run on single pages/posts, not in loops or indexes
+    if (!is_singular()) {
+        return '';
+    }
+
 
     $wirtzShow = new StackWirtz\WordpressPlugin\WirtzShow();
     return $wirtzShow->listPlaysByYear();
@@ -80,10 +85,8 @@ add_shortcode('wirtzdata_test', function () {
 
 
     // Include the bootstrap file
-    writzdata_bootstrap();
-    $wirtzData = new StackWirtz\WordpressPlugin\Models\WirtzData();
-
-    dump($wirtzData->getHeaders());
+    // $wirtzData = new StackWirtz\WordpressPlugin\Models\WirtzData();
+    // dump($wirtzData->getHeaders());
 
     return "";
 });
@@ -204,3 +207,82 @@ require_once 'wirtzdata-log.php';
  */
 include_once 'wirtzdata-javascript-vpn.php';
 
+
+
+/**
+ * Initialize URL rewrite functionality for Wirtz search
+ * 
+ * Sets up URL rewriting to handle the /wirtz/search/forwarded/page endpoint and redirect to the
+ * appropriate search page. This creates a clean URL structure for accessing the
+ * Wirtz data search functionality. This page is a post or page where the short code
+ * [wirtzdata] is found. It goes to the first one.
+ *
+ * Process:
+ * 1. Adds rewrite rule to handle /wirtz/search/forwarded/page URL
+ * 2. Registers wirtz_search_redirect query var
+ * 3. Handles redirect by:
+ *    - Looking for page with [wirtzdata] shortcode
+ *    - Redirecting to that page if found
+ *    - Falling back to home URL if not found
+ *
+ * @uses add_rewrite_rule() Add WordPress rewrite rule
+ * @uses add_filter() Add filter for query vars
+ * @uses get_query_var() Get query variable value
+ * @uses get_posts() Get pages containing shortcode
+ * @uses wp_redirect() Redirect to appropriate URL
+ */
+
+// Register rewrite rules during WordPress init
+function wirtzdata_register_rewrites() {
+    // Add rewrite rule
+    add_rewrite_rule('^wirtz/search/forwarded/page/?$', 'index.php?wirtz_search_redirect=1', 'top');
+}
+add_action('init', 'wirtzdata_register_rewrites');
+
+// Register query var
+add_filter('query_vars', function ($vars) {
+    $vars[] = 'wirtz_search_redirect';
+    return $vars;
+});
+
+// Handle redirect
+add_action('template_redirect', function () {
+    if (get_query_var('wirtz_search_redirect')) {
+        $pages = get_posts([
+            'post_type'      => array('page', 'post'),
+            'post_status'    => 'publish',
+            's'              => '[wirtzdata]',
+            'posts_per_page' => 1,
+        ]);
+
+        if (!empty($pages)) {
+            $redirect_url = get_permalink($pages[0]->ID);
+
+            // Get search parameters from query string
+            $params = array();
+            $search_params = array('first', 'last', 'production', 'team', 'role', 'career', 'grad');
+            foreach ($search_params as $param) {
+                if (isset($_GET[$param])) {
+                    $params[$param] = sanitize_text_field($_GET[$param]);
+                }
+            }
+
+            // Add parameters to redirect URL if they exist
+            if (!empty($params)) {
+                $redirect_url = add_query_arg($params, $redirect_url);
+            }
+
+            wp_redirect($redirect_url);
+        } else {
+            wp_redirect(home_url()); // fallback
+        }
+        exit;
+    }
+});
+
+// Flush rewrite rules on plugin activation
+function wirtzdata_flush_rules() {
+    wirtzdata_register_rewrites();
+    flush_rewrite_rules();
+}
+register_activation_hook(__FILE__, 'wirtzdata_flush_rules');

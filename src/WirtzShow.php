@@ -148,6 +148,7 @@ class WirtzShow
 
         // get year from query string if needed and sanitize it
         $currentyear = sanitize_text_field(wp_unslash(trim($_GET['currentyear'] ?? '')));
+
         
         // if $year is empty do nothing. If not empty, get the plays for that year
         if ($currentyear != '') {
@@ -160,6 +161,7 @@ class WirtzShow
         return $this->twig->render(
             'listplays.html.twig',
             [
+                'is_user_logged_in' => is_user_logged_in(),
                 'currentyear'   => $currentyear,
                 'years'         => $this->wirtz_data->getUniqueYears(),
                 'returnPage'    => $_SERVER['REQUEST_URI'],

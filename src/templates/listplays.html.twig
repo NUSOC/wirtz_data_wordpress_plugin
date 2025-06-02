@@ -1,14 +1,18 @@
-<h3>Productions by Year {{  currentyear }}</h3>
+<h3>Productions by Year {{ currentyear }}</h3>
 
 
 
-{% if currentyear is not null %}    
+{% if currentyear is not null %}
 
 <ul>
     {% for play in plays %}
-        <li>
+    <li>
+        {% if is_user_logged_in %}
+            <a href="/wirtz/search/forwarded/page/?production={{play}}&first={{first|default('')}}&last={{last|default('')}}&team={{team|default('')}}&role={{role|default('')}}&career={{career|default('')}}">{{ play }}</a>
+        {% else %}
             {{ play }}
-        </li>
+        {% endif %}
+    </li>
     {% endfor %}
 </ul>
 
@@ -21,11 +25,10 @@
     <label for="currentyear">Select Year:</label>
     <select name="currentyear">
         {% for year in years %}
-        <option value="{{ year }}" {% if year == currentyear %} selected {% endif %}>{{ year }}</option>
+        <option value="{{ year }}" {% if year==currentyear %} selected {% endif %}>{{ year }}</option>
         {% endfor %}
     </select>
 
     <input type="submit" value="Submit" aria-label="Submit the form">
 
 </form>
-
