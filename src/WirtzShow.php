@@ -149,6 +149,11 @@ class WirtzShow
         // get year from query string if needed and sanitize it
         $currentyear = sanitize_text_field(wp_unslash(trim($_GET['currentyear'] ?? '')));
 
+        // redirect post
+        $postlink = get_permalink(get_option('wirtz_data_stright_to_search_after_login_location', ''));
+        
+
+
         
         // if $year is empty do nothing. If not empty, get the plays for that year
         if ($currentyear != '') {
@@ -166,6 +171,8 @@ class WirtzShow
                 'years'         => $this->wirtz_data->getUniqueYears(),
                 'returnPage'    => $_SERVER['REQUEST_URI'],
                 'plays'         => $plays,
+                'postlink'      => $postlink,
+                
             ]
         );
     }

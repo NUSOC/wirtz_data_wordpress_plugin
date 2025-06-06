@@ -59,6 +59,7 @@ function wirtz_data_settings_register()
     register_setting('wirtz-data-group', 'wirtz_csv_folder');
     register_setting('wirtz-data-group', 'ollama_api_endpoint');
     register_setting('wirtz-data-group', 'ollama_model');
+    register_setting('wirtz-data-group', 'wirtz_data_stright_to_search_after_login_location');
 
     // Add settings section
     add_settings_section(
@@ -89,6 +90,14 @@ function wirtz_data_settings_register()
         'ollama_model',
         'Ollama Model',
         'display_ollama_model',
+        'wirtz-data-settings',
+        'wirtz-data-group'
+    );
+    
+    add_settings_field(
+        'wirtz_data_stright_to_search_after_login_location',
+        'Redirect After Login Page',
+        'display_wirtz_data_redirect_page',
         'wirtz-data-settings',
         'wirtz-data-group'
     );
@@ -139,4 +148,54 @@ function display_ollama_model()
 {
     $value = get_option('ollama_model', 'llama3');
     echo '<input type="text" name="ollama_model" value="' . esc_attr($value) . '" size="50"/>';
+}
+
+/**
+ * Displays a dropdown to select a page or post for redirection after login
+ * 
+ * This function creates a dropdown that allows administrators to select
+ * a page or post where users will be redirected after login.
+ *
+ * @since 1.0.0
+ * @return void
+ */
+function display_wirtz_data_redirect_page()
+{
+    $selected_value = get_option('wirtz_data_stright_to_search_after_login_location', '');
+    
+    // Get all pages
+    $pages = get_pages();
+    
+    // Get published posts
+    $posts = get_posts([
+        'post_type' => 'post',
+        'post_status' => 'publish',
+        'numberposts' => -1
+    ]);
+    
+    echo '<select name="wirtz_data_stright_to_search_after_login_location">';
+    echo '<option value="">-- Select a page or post --</option>';
+    
+    // Add pages to dropdown
+    if (!empty($pages)) {
+        echo '<optgroup label="Pages">';
+        foreach ($pages as $page) {
+            $selected = ($selected_value == $page->ID) ? 'selected="selected"' : '';
+            echo '<option value="' . esc_attr($page->ID) . '" ' . $selected . '>' . esc_html($page->post_title) . '</option>';
+        }
+        echo '</optgroup>';
+    }
+    
+    // Add posts to dropdown
+    if (!empty($posts)) {
+        echo '<optgroup label="Posts">';
+        foreach ($posts as $post) {
+            $selected = ($selected_value == $post->ID) ? 'selected="selected"' : '';
+            echo '<option value="' . esc_attr($post->ID) . '" ' . $selected . '>' . esc_html($post->post_title) . '</option>';
+        }
+        echo '</optgroup>';
+    }
+    
+    echo '</select>';
+    echo '<p class="description">Select a page or post where users will be redirected after login.</p>';
 }

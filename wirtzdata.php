@@ -46,7 +46,6 @@ add_shortcode('wirtzdata', function () {
         HTML;
     }
 
-
     // This is the primary hook to include anything in the /src folder
     $wirtzShow = new StackWirtz\WordpressPlugin\WirtzShow();
     return $wirtzShow->startpoint(); // Ensure the output is returned
@@ -109,49 +108,28 @@ add_shortcode('wirtzdata_NLP', function () {
 
 
 
+
 /**
- * Display admin notice for subscriber role users only
+ * Display admin notice with search page link and auto-redirect
  * 
- * Shows a notification message in the WordPress admin area for users with the 'subscriber' role.
- * The notice contains a link to the Wirtz Data search page and automatically redirects to that page.
- *
- * Process:
- * 1. Gets the current logged in user
- * 2. Checks if user has subscriber role
- * 3. Gets the configured redirect URL from WordPress options
- * 4. Extracts post/page ID from the stored option value
- * 5. Generates permalink URL for the target page
- * 6. Outputs HTML notice with:
- *    - Dismissible info-style admin notice div
- *    - Link to search page
- *    - JavaScript that auto-redirects after 50ms delay
- * 
- * Pro tip: Using printf() with HEREDOC syntax for HTML is way better than 
- * writing separate echo statements like some kind of caveman. Your 
- * coworkers will thank you. Your code reviewer will weep tears of joy.
- * 
- * @uses wp_get_current_user() Get current user object
- * @uses get_option() Get redirect URL from WP options
- * @uses get_permalink() Get full URL for post/page
- * @uses esc_url() Escape URL for safe output
+ * Shows a notice to subscriber users with a link to the Wirtz Data search page.
+ * Also automatically redirects them to that page after a short delay.
+ * The notice includes:
+ * - Large font size search icon and link text
+ * - Dismissible admin notice styling
+ * - JavaScript redirect after 100ms with cache-busting
  */
 add_action('admin_notices', function () {
-
-
-
     $user = wp_get_current_user();
 
     if ($user && in_array('subscriber', $user->roles)) {
-        $redirect_url = get_option('wirtz_data_stright_to_search_after_login_location');
-        if ($redirect_url) {
-            // Extract the ID from the Page_X or Post_X format
-            $parts = explode('_', $redirect_url);
-            $post_id = isset($parts[1]) ? intval($parts[1]) : 0;
+        $post_id = get_option('wirtz_data_stright_to_search_after_login_location');
 
-            if ($post_id > 0) {
-                $url = get_permalink($post_id);
-                printf(
-                    <<<HTML
+
+        if ($post_id > 0) {
+            $url = get_permalink($post_id);
+            printf(
+                <<<HTML
                         <style>
                             
                         </style>
@@ -168,14 +146,14 @@ add_action('admin_notices', function () {
                         </script>
                         
                     HTML,
-                    esc_url($url),
-                    esc_url($url),
-                    esc_url($url)
-                );
-            }
+                esc_url($url),
+                esc_url($url),
+                esc_url($url)
+            );
         }
     }
 });
+
 
 
 /**
@@ -206,86 +184,3 @@ require_once 'wirtzdata-log.php';
  * proper access control and security measures.
  */
 include_once 'wirtzdata-javascript-vpn.php';
-
-
-
-
-
-/**
- * Skráir endurskrifunarreglur fyrir WordPress init
- * 
- * Bætir við sérstakri reglu sem meðhöndlar vefslóðir fyrir leitarniðurstöður.
- * Þetta gerir kleift að nota sérsniðnar vefslóðir fyrir leitarviðmótið.
- */
-function wirtzdata_register_rewrites() {
-    // Add rewrite rule
-    add_rewrite_rule('^wirtz/search/forwarded/page/?$', 'index.php?wirtz_search_redirect=1', 'top');
-}
-add_action('init', 'wirtzdata_register_rewrites');
-
-/**
- * Skráir fyrirspurnarbreytu fyrir endurbeiningarkerfi
- * 
- * Bætir wirtz_search_redirect við lista yfir leyfðar fyrirspurnarbreytur
- * sem WordPress getur unnið með.
- *
- * @param array $vars Núverandi fyrirspurnarbreytur
- * @return array Uppfærður listi af fyrirspurnarbreytum
- */
-add_filter('query_vars', function ($vars) {
-    $vars[] = 'wirtz_search_redirect';
-    return $vars;
-});
-
-/**
- * Meðhöndlar endurbeiningarferli fyrir leitarniðurstöður
- * 
- * Athugar hvort fyrirspurn innihaldi wirtz_search_redirect breytuna.
- * Ef svo er, leitar að síðu með [wirtzdata] stuttkóða og 
- * endurbeinir notanda þangað ásamt öllum leitarskilyrðum.
- */
-add_action('template_redirect', function () {
-    if (get_query_var('wirtz_search_redirect')) {
-        $pages = get_posts([
-            'post_type'      => array('page', 'post'),
-            'post_status'    => 'publish',
-            's'              => '[wirtzdata]',
-            'posts_per_page' => 1,
-        ]);
-
-        if (!empty($pages)) {
-            $redirect_url = get_permalink($pages[0]->ID);
-
-            // Get search parameters from query string
-            $params = array();
-            $search_params = array('first', 'last', 'production', 'team', 'role', 'career', 'grad');
-            foreach ($search_params as $param) {
-                if (isset($_GET[$param])) {
-                    $params[$param] = sanitize_text_field($_GET[$param]);
-                }
-            }
-
-            // Add parameters to redirect URL if they exist
-            if (!empty($params)) {
-                $redirect_url = add_query_arg($params, $redirect_url);
-            }
-
-            wp_redirect($redirect_url);
-        } else {
-            wp_redirect(home_url()); // fallback
-        }
-        exit;
-    }
-});
-
-/**
- * Endurstillir endurskrifunarreglur við virkjun viðbótar
- * 
- * Keyrir þegar viðbótin er virkjuð til að tryggja að allar
- * endurskrifunarreglur séu uppfærðar í WordPress kerfinu.
- */
-function wirtzdata_flush_rules() {
-    wirtzdata_register_rewrites();
-    flush_rewrite_rules();
-}
-register_activation_hook(__FILE__, 'wirtzdata_flush_rules');

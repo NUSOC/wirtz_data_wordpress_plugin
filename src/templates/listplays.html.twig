@@ -8,7 +8,7 @@
     {% for play in plays %}
     <li>
         {% if is_user_logged_in %}
-            <a href="/wirtz/search/forwarded/page/?production={{play}}&first={{first|default('')}}&last={{last|default('')}}&team={{team|default('')}}&role={{role|default('')}}&career={{career|default('')}}">{{ play }}</a>
+            <a href="{{ postlink }}?production={{play}}&first={{first|default('')}}&last={{last|default('')}}&team={{team|default('')}}&role={{role|default('')}}&career={{career|default('')}}">{{ play }}</a>
         {% else %}
             {{ play }}
         {% endif %}
