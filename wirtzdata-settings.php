@@ -60,6 +60,7 @@ function wirtz_data_settings_register()
     register_setting('wirtz-data-group', 'ollama_api_endpoint');
     register_setting('wirtz-data-group', 'ollama_model');
     register_setting('wirtz-data-group', 'wirtz_data_stright_to_search_after_login_location');
+    register_setting('wirtz-data-group', 'wirtz_allowed_netids');
 
     // Add settings section
     add_settings_section(
@@ -98,6 +99,14 @@ function wirtz_data_settings_register()
         'wirtz_data_stright_to_search_after_login_location',
         'Redirect After Login Page',
         'display_wirtz_data_redirect_page',
+        'wirtz-data-settings',
+        'wirtz-data-group'
+    );
+    
+    add_settings_field(
+        'wirtz_allowed_netids',
+        'Allowed NetIDs',
+        'display_wirtz_allowed_netids',
         'wirtz-data-settings',
         'wirtz-data-group'
     );
@@ -198,4 +207,17 @@ function display_wirtz_data_redirect_page()
     
     echo '</select>';
     echo '<p class="description">Select a page or post where users will be redirected after login.</p>';
+}
+
+/**
+ * Displays the input field for allowed NetIDs setting
+ * 
+ * @since 1.0.0
+ * @return void
+ */
+function display_wirtz_allowed_netids()
+{
+    $value = get_option('wirtz_allowed_netids', '');
+    echo '<textarea name="wirtz_allowed_netids" rows="5" cols="50">' . esc_textarea($value) . '</textarea>';
+    echo '<p class="description">These NetIDs are allowed elevated views. Enter NetIDs in a comma separated list with now spaces.</p>';
 }
