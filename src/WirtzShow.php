@@ -12,7 +12,9 @@ use StackWirtz\WordpressPlugin\Models\WirtzData;
 
 class WirtzShow
 {
-    private $twig, $wirtz_data;
+    
+    // Changed from private to protected to allow child class access
+    protected $twig, $wirtz_data; 
 
     /**
      * Constructor for WirtzShow class
