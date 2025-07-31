@@ -60,5 +60,5 @@ class WirtzDataDeepDive extends WirtzShow
             'data' => $this->wirtz_data->getData()
         ]);
     }
-    }
+    
 }

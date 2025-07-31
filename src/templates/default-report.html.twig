@@ -1,0 +1,11 @@
+<h2>Default Report</h2>
+
+<div class="default-report">
+    {% for item in data %}
+        <div class="data-row">
+            {% for key, value in item %}
+                <span class="field"><strong>{{ key }}:</strong> {{ value }}</span>
+            {% endfor %}
+        </div>
+    {% endfor %}
+</div>
