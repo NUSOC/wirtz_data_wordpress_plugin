@@ -184,3 +184,14 @@ require_once 'wirtzdata-log.php';
  * proper access control and security measures.
  */
 include_once 'wirtzdata-javascript-vpn.php';
+
+/**
+ * Handle direct path /data-deep-dive
+ */
+add_action('init', function() {
+    if (parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH) === '/data-deep-dive') {
+        $deepDive = new StackWirtz\WordpressPlugin\WirtzDataDeepDive();
+        echo $deepDive->deepDiveView();
+        exit;
+    }
+});
