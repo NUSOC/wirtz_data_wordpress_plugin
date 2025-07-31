@@ -190,8 +190,28 @@ include_once 'wirtzdata-javascript-vpn.php';
  */
 add_action('init', function() {
     if (parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH) === '/data-deep-dive') {
-        $deepDive = new StackWirtz\WordpressPlugin\WirtzDataDeepDive();
-        echo $deepDive->deepDiveView();
-        exit;
+        add_action('wp_loaded', function() {
+            global $post, $wp_query;
+            $post = (object) [
+                'ID' => 0,
+                'post_name' => 'data-deep-dive',
+                'post_title' => 'Deep Dive Data View',
+                'post_content' => '',
+                'post_type' => 'page',
+                'post_status' => 'publish',
+                'post_parent' => 0
+            ];
+            $wp_query->is_page = true;
+            $wp_query->is_singular = true;
+            $wp_query->post = $post;
+            
+            $deepDive = new StackWirtz\WordpressPlugin\WirtzDataDeepDive();
+            $content = $deepDive->deepDiveView();
+            
+            get_header();
+            echo $content;
+            get_footer();
+            exit;
+        });
     }
 });

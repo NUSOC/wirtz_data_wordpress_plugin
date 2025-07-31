@@ -1,21 +1,13 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Deep Dive Data View</title>
-</head>
-<body>
-    <h1>Deep Dive Data View</h1>
-    
-    <div class="data-container">
-        {% for item in data %}
-            <div class="data-item">
-                {% for key, value in item %}
-                    <span class="field"><strong>{{ key }}:</strong> {{ value }}</span>
-                {% endfor %}
-            </div>
-        {% endfor %}
-    </div>
-    
-    <a href="{{ returnPage }}">Back</a>
-</body>
-</html>
+<h1>Deep Dive Data View</h1>
+
+<div class="data-container">
+    {% for item in data %}
+        <div class="data-item">
+            {% for key, value in item %}
+                <span class="field"><strong>{{ key }}:</strong> {{ value }}</span>
+            {% endfor %}
+        </div>
+    {% endfor %}
+</div>
+
+<a href="{{ returnPage }}">Back</a>
