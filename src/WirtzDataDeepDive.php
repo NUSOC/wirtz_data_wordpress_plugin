@@ -46,16 +46,13 @@ class WirtzDataDeepDive extends WirtzShow
 
         // Switch statement to handle different report types
         switch ($report_type) {
-            case 'raw':
-                dd($this->wirtz_data->getData());
-                break;
+            
             case 'groupByYearProductionStats':
                 $content = StaticReports::renderYearProductionStatsAsHTML(StaticReports::groupByYearProductionStats($this->wirtz_data->getData()));
                 break;
             default:
-                $content = "testing";
+                $content = "No report selected";
         }
-
 
         return $this->twig->render('deepdive.html.twig', [
             'report_type' => $report_type,
