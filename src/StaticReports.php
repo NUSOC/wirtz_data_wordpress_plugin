@@ -75,41 +75,35 @@ class StaticReports
                 $content .= '<a name="' . esc_attr($year . '-' . $production) . '"></a>';
 
                 // Career table
-                $content .= '<h4>Career Distribution</h4>';
-                $content .= '<table class="wp-list-table widefat fixed striped">';
-                $content .= '<thead><tr><th>Career</th><th>Count</th><th>Chart</th></tr></thead><tbody>';
+                $content .= '<h4>Career Distribution</h4><table class="wp-list-table widefat fixed striped"><thead><tr><th>Career</th><th>Count</th><th>Chart</th></tr></thead><tbody>';
                 $careerTotal = array_sum($stats['Career']);
                 foreach ($stats['Career'] as $career => $count) {
                     $barLength = $careerTotal > 0 ? round(($count / $careerTotal) * 20) : 0;
                     $percentage = $careerTotal > 0 ? round(($count / $careerTotal) * 100, 1) : 0;
                     $bar = str_repeat('█', $barLength);
-                    $content .= '<tr><td>' . esc_html($career) . '</td><td>' . esc_html($count) . '</td><td style="font-family:monospace;width:200px;">' . $bar . ' ' . $percentage . '%</td></tr>';
+                    $content .= sprintf('<tr><td>%s</td><td>%s</td><td style="font-family:monospace;width:200px;">%s %s%%</td></tr>', esc_html($career), esc_html($count), $bar, $percentage);
                 }
                 $content .= '</tbody></table>';
                 
                 // Team table
-                $content .= '<h4>Team Distribution</h4>';
-                $content .= '<table class="wp-list-table widefat fixed striped">';
-                $content .= '<thead><tr><th>Team</th><th>Count</th><th>Chart</th></tr></thead><tbody>';
+                $content .= '<h4>Team Distribution</h4><table class="wp-list-table widefat fixed striped"><thead><tr><th>Team</th><th>Count</th><th>Chart</th></tr></thead><tbody>';
                 $teamTotal = array_sum($stats['Team']);
                 foreach ($stats['Team'] as $team => $count) {
                     $barLength = $teamTotal > 0 ? round(($count / $teamTotal) * 20) : 0;
                     $percentage = $teamTotal > 0 ? round(($count / $teamTotal) * 100, 1) : 0;
                     $bar = str_repeat('█', $barLength);
-                    $content .= '<tr><td>' . esc_html($team) . '</td><td>' . esc_html($count) . '</td><td style="font-family:monospace;width:200px;">' . $bar . ' ' . $percentage . '%</td></tr>';
+                    $content .= sprintf('<tr><td>%s</td><td>%s</td><td style="font-family:monospace;width:200px;">%s %s%%</td></tr>', esc_html($team), esc_html($count), $bar, $percentage);
                 }
                 $content .= '</tbody></table>';
                 
                 // Grad table
-                $content .= '<h4>Graduation Year Distribution</h4>';
-                $content .= '<table class="wp-list-table widefat fixed striped">';
-                $content .= '<thead><tr><th>Grad Year</th><th>Count</th><th>Chart</th></tr></thead><tbody>';
+                $content .= '<h4>Graduation Year Distribution</h4><table class="wp-list-table widefat fixed striped"><thead><tr><th>Grad Year</th><th>Count</th><th>Chart</th></tr></thead><tbody>';
                 $gradTotal = array_sum($stats['Grad']);
                 foreach ($stats['Grad'] as $grad => $count) {
                     $barLength = $gradTotal > 0 ? round(($count / $gradTotal) * 20) : 0;
                     $percentage = $gradTotal > 0 ? round(($count / $gradTotal) * 100, 1) : 0;
                     $bar = str_repeat('█', $barLength);
-                    $content .= '<tr><td>' . esc_html($grad) . '</td><td>' . esc_html($count) . '</td><td style="font-family:monospace;width:200px;">' . $bar . ' ' . $percentage . '%</td></tr>';
+                    $content .= sprintf('<tr><td>%s</td><td>%s</td><td style="font-family:monospace;width:200px;">%s %s%%</td></tr>', esc_html($grad), esc_html($count), $bar, $percentage);
                 }
                 $content .= '</tbody></table><br>';
             }
