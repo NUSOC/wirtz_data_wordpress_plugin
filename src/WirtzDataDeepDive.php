@@ -7,6 +7,13 @@ use StackWirtz\WordpressPlugin\Models\WirtzData;
 
 class WirtzDataDeepDive extends WirtzShow
 {
+
+    public function __construct()
+    {
+        parent::__construct();
+        $this->wirtz_data = new WirtzData();
+    }
+
     public function deepDiveView()
     {
         $this->userAuthCheck();
@@ -32,20 +39,27 @@ class WirtzDataDeepDive extends WirtzShow
             ? $_GET['report_type']
             : 'none';
 
+
         // Set up content variable to hold report output
         $content = '';
 
         // Switch statement to handle different report types
-        switch($report_type) {
-            // Add additional report cases here as needed
-            
+        switch ($report_type) {
+            case 'raw':
+                dd($this->wirtz_data->getData());
+                 break;
+            case 'groupByYearProductionStats':
+                $content = StaticReports::renderYearProductionStatsAsHTML( StaticReports::groupByYearProductionStats($this->wirtz_data->getData()) );          
             default:
-                $content = $this->getDefaultReport();
                 break;
         }
 
+        
+
+      
+
         return $this->twig->render('deepdive.html.twig', [
-            'data' => $this->wirtz_data->getData(),
+            'report_type' => $report_type,
             'returnPage' => $_SERVER['REQUEST_URI'],
             'content' => $content
         ]);
@@ -55,10 +69,36 @@ class WirtzDataDeepDive extends WirtzShow
      * Get default report content when no specific report type is selected
      * @return string Default report content
      */
-    private function getDefaultReport() {
-        return $this->twig->render('default-report.html.twig', [
-            'data' => $this->wirtz_data->getData()
-        ]);
+    private function getDefaultReport()
+    {
+
+        // Build HTML table from array data
+        $data = $this->wirtz_data->getData();
+        $table = '<table class="wp-list-table widefat fixed striped">';
+        $table .= '<thead><tr>';
+
+        // Generate table headers from first row keys
+        if (!empty($data)) {
+            foreach (array_keys(reset($data)) as $header) {
+                $table .= '<th>' . esc_html($header) . '</th>';
+            }
+        }
+
+        $table .= '</tr></thead><tbody>';
+
+        // Generate table rows
+        foreach ($data as $row) {
+            $table .= '<tr>';
+            foreach ($row as $cell) {
+                $table .= '<td>' . esc_html($cell) . '</td>';
+            }
+            $table .= '</tr>';
+        }
+
+        $table .= '</tbody></table>';
+
+
+
+        return $table;
     }
-    
 }

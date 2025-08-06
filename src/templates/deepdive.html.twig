@@ -1,6 +1,35 @@
-<h1>Deep Dive Data View</h1>
+
+
+<style>
+    h1, h2, h3, h4, h5, h6, 
+    table, td, tr, p, div {
+        margin: 0;
+        padding: 0;
+    }
+
+    th, td {
+        font-size: 14px;
+        min-width: 150px;
+    }
+</style>
+
+Deep Dive Data View: {{ report_type }} 
+
+
+<select id="report_type" onchange="window.location.href=window.location.pathname + '?report_type=' + this.value">
+    <option value="">Select View</option>
+    <option value="raw">RAW</optoin>
+    <option value="groupByYearProductionStats">groupByYearProductionStats</option>
+    <option value="role_distribution">Role distribution</option>
+    <option value="yearly_trends">Yearly trends</option>
+    <option value="role_comparison">Role comparison</option>
+</select>
+
+
+
 
 <div class="data-container">
+    {{ content | raw }}
     {% for item in data %}
         <div class="data-item">
             {% for key, value in item %}
@@ -10,4 +39,4 @@
     {% endfor %}
 </div>
 
-<a href="{{ returnPage }}">Back</a>
+
