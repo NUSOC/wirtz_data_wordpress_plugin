@@ -1,0 +1,77 @@
+<div style="background:#f9f9f9;padding:15px;margin-bottom:20px;border:1px solid #ddd;">
+    <h3>Quick Navigation</h3>
+    <select onchange="if(this.value) window.location.hash=this.value">
+        <option value="">Select a Production...</option>
+        {% for year, productions in yearProductionStats %}
+            {% for production, stats in productions %}
+                <option value="{{ year ~ '-' ~ production }}">{{ year }} - {{ production }}</option>
+            {% endfor %}
+        {% endfor %}
+    </select>
+</div>
+
+{% for year, productions in yearProductionStats %}
+    <h2>{{ year }}</h2>
+    
+    {% for production, stats in productions %}
+        
+        <a name="{{ year ~ '-' ~ production }}"></a>
+        <h3>{{ year }}: {{ production }}</h3>
+        
+
+        {# Career table #}
+        <h4>Career Distribution</h4>
+        <table class="wp-list-table widefat fixed striped">
+            <thead><tr><th>Career</th><th>Count</th><th>Chart</th></tr></thead>
+            <tbody>
+                {% set careerTotal = stats.Career|reduce((carry, count) => carry + count, 0) %}
+                {% for career, count in stats.Career %}
+                    {% set barLength = careerTotal > 0 ? ((count / careerTotal) * 20)|round : 0 %}
+                    {% set percentage = careerTotal > 0 ? ((count / careerTotal) * 100)|round(1) : 0 %}
+                    <tr>
+                        <td>{{ career }}</td>
+                        <td>{{ count }}</td>
+                        <td style="font-family:monospace;width:200px;">{{ '█'|repeat(barLength) }} {{ percentage }}%</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        {# Team table #}
+        <h4>Team Distribution</h4>
+        <table class="wp-list-table widefat fixed striped">
+            <thead><tr><th>Team</th><th>Count</th><th>Chart</th></tr></thead>
+            <tbody>
+                {% set teamTotal = stats.Team|reduce((carry, count) => carry + count, 0) %}
+                {% for team, count in stats.Team %}
+                    {% set barLength = teamTotal > 0 ? ((count / teamTotal) * 20)|round : 0 %}
+                    {% set percentage = teamTotal > 0 ? ((count / teamTotal) * 100)|round(1) : 0 %}
+                    <tr>
+                        <td>{{ team }}</td>
+                        <td>{{ count }}</td>
+                        <td style="font-family:monospace;width:200px;">{{ '█'|repeat(barLength) }} {{ percentage }}%</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        {# Grad table #}
+        <h4>Graduation Year Distribution</h4>
+        <table class="wp-list-table widefat fixed striped">
+            <thead><tr><th>Grad Year</th><th>Count</th><th>Chart</th></tr></thead>
+            <tbody>
+                {% set gradTotal = stats.Grad|reduce((carry, count) => carry + count, 0) %}
+                {% for grad, count in stats.Grad %}
+                    {% set barLength = gradTotal > 0 ? ((count / gradTotal) * 20)|round : 0 %}
+                    {% set percentage = gradTotal > 0 ? ((count / gradTotal) * 100)|round(1) : 0 %}
+                    <tr>
+                        <td>{{ grad }}</td>
+                        <td>{{ count }}</td>
+                        <td style="font-family:monospace;width:200px;">{{ '█'|repeat(barLength) }} {{ percentage }}%</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <br>
+    {% endfor %}
+{% endfor %}
