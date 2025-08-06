@@ -199,7 +199,8 @@ add_action('init', function() {
                 'post_content' => '',
                 'post_type' => 'page',
                 'post_status' => 'publish',
-                'post_parent' => 0
+                'post_parent' => 0,
+                'ancestors' => []
             ];
             $wp_query->is_page = true;
             $wp_query->is_singular = true;
