@@ -51,8 +51,7 @@ class WirtzDataDeepDive extends WirtzShow
             case 'groupByYearProductionStats':
                 $content = StaticReports::renderYearProductionStatsAsHTML( StaticReports::groupByYearProductionStats($this->wirtz_data->getData()) );          
             default:
-                dd('test');
-                break;
+                $content = "testing";
         }
 
         
