@@ -12,7 +12,7 @@ class WirtzData
         $this->lastest_file = $this->latestFile();
         if ($fileHandle = fopen($this->lastest_file, 'r')) {
             $data = array();
-            while (($row = fgetcsv($fileHandle)) !== false) {
+            while (($row = fgetcsv($fileHandle, 0, ',', '"', '\\')) !== false) {
                 $data[] = $row;
             }
             fclose($fileHandle); // Don't forget to close the file

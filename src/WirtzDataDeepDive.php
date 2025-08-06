@@ -43,62 +43,24 @@ class WirtzDataDeepDive extends WirtzShow
         // Set up content variable to hold report output
         $content = '';
 
+
         // Switch statement to handle different report types
         switch ($report_type) {
             case 'raw':
                 dd($this->wirtz_data->getData());
-                 break;
+                break;
             case 'groupByYearProductionStats':
-                $content = StaticReports::renderYearProductionStatsAsHTML( StaticReports::groupByYearProductionStats($this->wirtz_data->getData()) );          
+                $content = StaticReports::renderYearProductionStatsAsHTML(StaticReports::groupByYearProductionStats($this->wirtz_data->getData()));
+                break;
             default:
                 $content = "testing";
         }
 
-        
-
-      
 
         return $this->twig->render('deepdive.html.twig', [
             'report_type' => $report_type,
             'returnPage' => $_SERVER['REQUEST_URI'],
             'content' => $content
         ]);
-    }
-
-    /**
-     * Get default report content when no specific report type is selected
-     * @return string Default report content
-     */
-    private function getDefaultReport()
-    {
-
-        // Build HTML table from array data
-        $data = $this->wirtz_data->getData();
-        $table = '<table class="wp-list-table widefat fixed striped">';
-        $table .= '<thead><tr>';
-
-        // Generate table headers from first row keys
-        if (!empty($data)) {
-            foreach (array_keys(reset($data)) as $header) {
-                $table .= '<th>' . esc_html($header) . '</th>';
-            }
-        }
-
-        $table .= '</tr></thead><tbody>';
-
-        // Generate table rows
-        foreach ($data as $row) {
-            $table .= '<tr>';
-            foreach ($row as $cell) {
-                $table .= '<td>' . esc_html($cell) . '</td>';
-            }
-            $table .= '</tr>';
-        }
-
-        $table .= '</tbody></table>';
-
-
-
-        return $table;
     }
 }
