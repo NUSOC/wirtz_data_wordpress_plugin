@@ -1,5 +1,9 @@
 <?php
 
+use StackWirtz\WordpressPlugin\Handlers\SettingsFormHandler;
+use Twig\Environment;
+use Twig\Loader\FilesystemLoader;
+
 // Register the settings page
 function wirtz_data_settings_page()
 {
@@ -16,40 +20,59 @@ add_action('admin_menu', 'wirtz_data_settings_page');
 // Display the settings page content
 function wirtz_data_settings_html()
 {
-?>
-    <div class="wrap">
-        <h1>Wirtz Data Settings</h1>
-        <form method="post" action="options.php">
-            <?php
-            settings_fields('wirtz-data-group');
-            do_settings_sections('wirtz-data-settings');
-            ?>
-            <?php submit_button(); ?>
-        </form>
-    </div>
-
-    <div>
-        <?php
-        $logs = wirtzdata_get_logs();
-        if (!empty($logs)) {
-            echo '<table class="widefat fixed striped">';
-            echo '<thead><tr>';
-            foreach (array_keys(get_object_vars($logs[0])) as $header) {
-                echo '<th>' . esc_html($header) . '</th>';
-            }
-            echo '</tr></thead><tbody>';
-            foreach ($logs as $log) {
-                echo '<tr>';
-                foreach (get_object_vars($log) as $value) {
-                    echo '<td>' . esc_html($value) . '</td>';
-                }
-                echo '</tr>';
-            }
-            echo '</tbody></table>';
+    // Handle file deletion
+    if (isset($_POST['delete_csv_file']) && isset($_POST['_wpnonce']) && wp_verify_nonce($_POST['_wpnonce'], 'delete_csv_file') && current_user_can('manage_options')) {
+        SettingsFormHandler::handleCsvFileDeletion();
+    }
+    
+    // Set up Twig
+    $loader = new FilesystemLoader(__DIR__ . '/src/templates');
+    $twig = new Environment($loader);
+    
+    // Prepare data for template
+    $logs = wirtzdata_get_logs();
+    $log_headers = [];
+    $log_data = [];
+    
+    if (!empty($logs)) {
+        $log_headers = array_keys(get_object_vars($logs[0]));
+        foreach ($logs as $log) {
+            $log_data[] = array_values(get_object_vars($log));
         }
-        ?>
-    </div>
-<?php
+    }
+    
+    // Get settings errors as messages
+    $messages = [];
+    $errors = get_settings_errors('wirtz_csv_files');
+    foreach ($errors as $error) {
+        $messages[] = [
+            'type' => $error['type'] === 'updated' ? 'success' : 'error',
+            'text' => $error['message']
+        ];
+    }
+    
+    // Capture WordPress form elements
+    ob_start();
+    settings_fields('wirtz-data-group');
+    $settings_fields = ob_get_clean();
+    
+    ob_start();
+    do_settings_sections('wirtz-data-settings');
+    $do_settings_sections = ob_get_clean();
+    
+    ob_start();
+    submit_button();
+    $submit_button = ob_get_clean();
+    
+    echo $twig->render('admin-settings.html.twig', [
+        'messages' => $messages,
+        'settings_fields' => $settings_fields,
+        'do_settings_sections' => $do_settings_sections,
+        'submit_button' => $submit_button,
+        'csv_files_data' => SettingsFormHandler::getCsvFilesData(),
+        'logs' => $log_data,
+        'log_headers' => $log_headers
+    ]);
 }
 
 // Register settings, sections, and fields
@@ -75,6 +98,14 @@ function wirtz_data_settings_register()
         'wirtz_csv_folder',
         'CSV FOLDER',
         'display_wirtz_csv_folder',
+        'wirtz-data-settings',
+        'wirtz-data-group'
+    );
+    
+    add_settings_field(
+        'wirtz_csv_files_list',
+        'Current Files in CSV Folder',
+        'display_wirtz_csv_files_list',
         'wirtz-data-settings',
         'wirtz-data-group'
     );
@@ -128,6 +159,22 @@ function display_wirtz_csv_folder()
     $value = get_option('wirtz_csv_folder', '');
     echo '<input type="text" name="wirtz_csv_folder" value="' . esc_attr($value) . '" size="50"/>';
 }
+
+/**
+ * Displays the current files in the CSV folder
+ * 
+ * This function shows a list of CSV files currently in the configured CSV folder.
+ * It's a read-only display to help administrators see what files are available.
+ *
+ * @since 1.0.0
+ * @return void
+ */
+function display_wirtz_csv_files_list()
+{
+    echo '<p><em>CSV files are displayed in the main settings area above.</em></p>';
+}
+
+
 
 /**
  * Displays the input field for Ollama API endpoint setting

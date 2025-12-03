@@ -40,6 +40,10 @@ class WirtzData
 
     /**
      * Returns the path of the latest CSV file in the specified folder.
+     * Yes, this function gets the most recently modified CSV file by:
+     * 1. Getting all .csv files in the specified folder
+     * 2. Sorting them by modification time in descending order (newest first)
+     * 3. Returning the path of the newest file
      *
      * @return string The path of the latest CSV file.
      */
