@@ -58,8 +58,8 @@ class WirtzData
             return filemtime($b) - filemtime($a);
         });
 
-        // Return the latest file
-        return str_replace("//", "/", end($files));
+        // Return the latest file (first element after sorting by newest first)
+        return str_replace("//", "/", $files[0]);
     }
 
 
