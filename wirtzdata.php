@@ -167,6 +167,7 @@ register_activation_hook(__FILE__, 'wirtzdata_create_log_table');
  * Loads the wirtzdata-settings.php file which contains plugin configuration
  * and settings functionality.
  */
+require_once 'src/handlers/SettingsFormHandler.php';
 require_once 'wirtzdata-settings.php';
 
 /**
