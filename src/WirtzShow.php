@@ -174,6 +174,7 @@ class WirtzShow
                 'returnPage'    => $_SERVER['REQUEST_URI'],
                 'plays'         => $plays,
                 'postlink'      => $postlink,
+                'csvmoddate'    => $this->wirtz_data->lastFileModifiedAt()
                 
             ]
         );

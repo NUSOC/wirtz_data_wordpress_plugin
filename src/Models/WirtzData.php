@@ -5,8 +5,18 @@ namespace StackWirtz\WordpressPlugin\Models;
 class WirtzData
 {
 
-    private $wirtz_env, $lastest_file, $data, $headers;
+    private $wirtz_env, $lastest_file, $data, $headers, $last_modified;
 
+    /**
+     * Constructor for WirtzData class
+     * 
+     * Initializes the object by:
+     * 1. Getting the latest CSV file path
+     * 2. Opening and reading the CSV file
+     * 3. Converting the CSV data into an array with column headers
+     * 
+     * @throws \Exception If file cannot be opened or read
+     */
     public function __construct()
     {
         $this->lastest_file = $this->latestFile();
@@ -15,7 +25,12 @@ class WirtzData
             while (($row = fgetcsv($fileHandle, 0, ',', '"', '\\')) !== false) {
                 $data[] = $row;
             }
-            fclose($fileHandle); // Don't forget to close the file
+            fclose($fileHandle);
+
+            // get date of file 
+            $this->last_modified = date("Y-m-d H:i:s", filemtime($this->lastest_file));
+
+            // close the file 
             $this->data = $this->convertToArrayWithColumnHeaders($data);
         } else {
             // TODO: Handle error
@@ -34,9 +49,6 @@ class WirtzData
         //TODO: check if folder exists first
         $files = glob(get_option('wirtz_csv_folder') . '/*.csv');
 
-
-
-
         // Sort the files array by modification time in descending order
         usort($files, function ($a, $b) {
             return filemtime($b) - filemtime($a);
@@ -46,6 +58,16 @@ class WirtzData
         return str_replace("//", "/", end($files));
     }
 
+
+    /**
+     * Returns the last modified timestamp of the CSV file.
+     * 
+     * @return string The last modified date/time in Y-m-d H:i:s format
+     */
+    public function lastFileModifiedAt(): string
+    {
+        return $this->last_modified;
+    }
 
     /**
      * Returns the data as an array with column headers, where the first 
@@ -269,7 +291,7 @@ class WirtzData
 
         // dump($result);
 
-       // default to Last
+        // default to Last
         $field = 'Last';
         usort($result, function ($a, $b) use ($field) {
             return strcasecmp($a[$field], $b[$field]);
