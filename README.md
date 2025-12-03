@@ -2,55 +2,32 @@
 
 A WordPress plugin to retrieve data from a CSV file using a shortcode.
 
-## Running Tests
+## Features
 
-This plugin includes unit tests that can be run using WP-CLI. Follow these steps to set up and run the tests:
+- CSV data search and display using shortcodes
+- Admin settings page with CSV file management
+- Twig templating for clean UI rendering
+- VPN detection and access control
+- Automatic newest CSV file detection
+- User authentication and role-based access
 
-### 1. Install the WordPress Test Environment
+## Settings Page
 
-Run the following command to install the WordPress test environment:
+The plugin includes an admin settings page accessible via **Wirtz Data Settings** in the WordPress admin menu. The settings page allows you to:
 
-```bash
-./bin/install-wp-tests.sh wordpress_test root password localhost latest
-```
+- Configure CSV folder path
+- View current CSV files in the folder (filename, size, modification date)
+- Set Ollama API endpoint and model
+- Configure redirect page after login
+- Manage allowed NetIDs
 
-Replace `wordpress_test` with your test database name, `root` with your database username, and `password` with your database password.
+## CSV File Management
 
-### 2. Run Tests Using WP-CLI
+The plugin automatically detects and uses the newest CSV file in the configured folder based on modification time. The settings page displays all CSV files currently in the folder for easy monitoring.
 
-You can run the tests using WP-CLI with the following command:
+## Architecture
 
-```bash
-wp eval-file tests/run-wp-tests.php
-```
-
-Or using the Composer script:
-
-```bash
-composer test-wp
-```
-
-### 3. Run Tests Using PHPUnit Directly
-
-You can also run the tests using PHPUnit directly:
-
-```bash
-./vendor/bin/phpunit
-```
-
-Or using the Composer script:
-
-```bash
-composer test
-```
-
-## Test Structure
-
-- `tests/bootstrap.php`: Sets up the WordPress testing environment
-- `tests/test-wirtz-data.php`: Tests for the WirtzData class
-- `tests/test-wirtz-show.php`: Tests for the WirtzShow class
-- `tests/fixtures/`: Contains test data files
-
-## Adding New Tests
-
-To add new tests, create a new file in the `tests` directory with the prefix `test-`. For example, `test-new-feature.php`. The file should contain a class that extends `WP_UnitTestCase`.
+- **Twig Templates**: Located in `src/templates/` for clean separation of logic and presentation
+- **Form Handlers**: Separate classes in `src/handlers/` for processing form submissions
+- **Models**: Data models in `src/Models/` for CSV data handling
+- **VPN Detection**: JavaScript-based IP detection for access control
