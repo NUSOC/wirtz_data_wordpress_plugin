@@ -25,7 +25,6 @@
                 <th>File Name</th>
                 <th>Size</th>
                 <th>Modified</th>
-                <th>Action</th>
             </tr>
         </thead>
         <tbody>
@@ -34,13 +33,6 @@
                 <td>{{ file.filename }}</td>
                 <td>{{ file.size }}</td>
                 <td>{{ file.modified }}</td>
-                <td>
-                    <form method="post" style="display: inline;" onsubmit="return confirm('Are you sure you want to delete {{ file.filename }}?');">
-                        <input type="hidden" name="delete_csv_file" value="{{ file.filename }}">
-                        <input type="hidden" name="_wpnonce" value="{{ file.nonce }}">
-                        <input type="submit" value="Delete" class="button button-secondary button-small">
-                    </form>
-                </td>
             </tr>
             {% endfor %}
         </tbody>

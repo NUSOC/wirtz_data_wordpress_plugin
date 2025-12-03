@@ -20,10 +20,6 @@ add_action('admin_menu', 'wirtz_data_settings_page');
 // Display the settings page content
 function wirtz_data_settings_html()
 {
-    // Handle file deletion
-    if (isset($_POST['delete_csv_file']) && isset($_POST['_wpnonce']) && wp_verify_nonce($_POST['_wpnonce'], 'delete_csv_file') && current_user_can('manage_options')) {
-        SettingsFormHandler::handleCsvFileDeletion();
-    }
     
     // Set up Twig
     $loader = new FilesystemLoader(__DIR__ . '/src/templates');
@@ -41,15 +37,7 @@ function wirtz_data_settings_html()
         }
     }
     
-    // Get settings errors as messages
     $messages = [];
-    $errors = get_settings_errors('wirtz_csv_files');
-    foreach ($errors as $error) {
-        $messages[] = [
-            'type' => $error['type'] === 'updated' ? 'success' : 'error',
-            'text' => $error['message']
-        ];
-    }
     
     // Capture WordPress form elements
     ob_start();
