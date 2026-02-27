@@ -7,233 +7,140 @@
  * Author: SOC External Affairs
  */
 
-
 // Include the Composer autoload file
 require_once __DIR__ . '/vendor/autoload.php';
 
+use StackWirtz\WordpressPlugin\WirtzShow;
+use StackWirtz\WordpressPlugin\WirtzDataDeepDive;
+use StackWirtz\WordpressPlugin\NLP;
 
-
-
-
-
-/**
- * Shortcode to display the main search interface form 
- * a the CSV data. 
- *
- * @return string The output of the shortcode
- */
-add_shortcode('wirtzdata', function () {
-
-    // Only run on single pages/posts, not in loops or indexes
-    if (!is_singular()) {
-        return '';
-    }
-
-    // Check if user is currently logged into WordPress
-    // If not authenticated, generate HTML with login URL and JavaScript redirect
-    // This ensures only logged-in users can access the data
-    if (!is_user_logged_in()) {
-        // Get WordPress login URL using wp_login_url() function
-        $login_url = wp_login_url();
-        return <<<HTML
-            You are being forward to the login page: <br> <a href="$login_url">$login_url</a>
-            <br>
-            <script>
-                setTimeout(function() {
-                    window.location.href = "$login_url";
-                }, 100);
-            </script>
-        HTML;
-    }
-
-    // This is the primary hook to include anything in the /src folder
-    $wirtzShow = new StackWirtz\WordpressPlugin\WirtzShow();
-    return $wirtzShow->startpoint(); // Ensure the output is returned
-});
-
-
-
+// --- Global Functions & Setup ---
 
 /**
- * Sýnir lista af leikritum eftir ári
- */
-add_shortcode('wirtzdata_listplays', function () {
-
-    // Only run on single pages/posts, not in loops or indexes
-    if (!is_singular()) {
-        return '';
-    }
-
-
-    $wirtzShow = new StackWirtz\WordpressPlugin\WirtzShow();
-    return $wirtzShow->listPlaysByYear();
-});
-
-
-
-/**
- * Test shortcode to display CSV headers
- * 
- * Creates a test shortcode that initializes the WirtzData model
- * and dumps the CSV headers. Used for debugging purposes.
- *
- * @return string Empty string after dumping headers
- */
-add_shortcode('wirtzdata_test', function () {
-
-
-
-    // Include the bootstrap file
-    // $wirtzData = new StackWirtz\WordpressPlugin\Models\WirtzData();
-    // dump($wirtzData->getHeaders());
-
-    return "";
-});
-
-
-/**
- * Shortcode to display the NLP interface
- * 
- * Creates a shortcode that initializes the NLP class
- * and displays the NLP interface.
- *
- * @return string The rendered NLP interface
- */
-add_shortcode('wirtzdata_NLP', function () {
-    $nlp = new StackWirtz\WordpressPlugin\NLP();
-    return $nlp->displayNLP();
-});
-
-
-
-/**
- * Shortcode to display production counts by year as a chart
- * 
- * Uses Chart.js to display a bar chart showing the number of 
- * productions per year from the CSV data.
- *
- * @return string The rendered chart template
- */
-add_shortcode('wirtzdata_productions_by_year', function () {
-    if (!is_user_logged_in()) {
-        $login_url = wp_login_url();
-        return "Please <a href='$login_url'>login</a> to view this chart.";
-    }
-
-    $wirtzShow = new StackWirtz\WordpressPlugin\WirtzShow();
-    return $wirtzShow->renderProductionByYearChart(true);
-});
-
-
-
-
-
-
-/**
- * Display admin notice with search page link and auto-redirect
- * 
- * Shows a notice to subscriber users with a link to the Wirtz Data search page.
- * Also automatically redirects them to that page after a short delay.
- * The notice includes:
- * - Large font size search icon and link text
- * - Dismissible admin notice styling
- * - JavaScript redirect after 100ms with cache-busting
- */
-add_action('admin_notices', function () {
-    $user = wp_get_current_user();
-
-    if ($user && in_array('subscriber', $user->roles)) {
-        $post_id = get_option('wirtz_data_stright_to_search_after_login_location');
-
-
-        if ($post_id > 0) {
-            $url = get_permalink($post_id);
-            printf(
-                <<<HTML
-                        <style>
-                            
-                        </style>
-                        <div class="notice notice-info is-dismissible" style="font-size: 32px; float: left;" >
-                          
-                                🔎 You can access the Wirtz Data search page here: <a href="%s">%s</a>
-                        </div>
-                        <script>
-                            document.addEventListener("DOMContentLoaded", function() {
-                                setTimeout(function(){
-                                    window.location.replace("%s?random=" + Date.now());
-                                }, 100);
-                            });
-                        </script>
-                        
-                    HTML,
-                esc_url($url),
-                esc_url($url),
-                esc_url($url)
-            );
-        }
-    }
-});
-
-
-
-/**
- * Register activation hook to create the log table
+ * Register activation hook to ensure the log table is created upon plugin activation.
+ * This calls the function defined in wirtzdata-log.php.
  */
 register_activation_hook(__FILE__, 'wirtzdata_create_log_table');
 
-/**
- * Include the plugin settings file
- * 
- * Loads the wirtzdata-settings.php file which contains plugin configuration
- * and settings functionality.
- */
-require_once 'src/handlers/SettingsFormHandler.php';
+// Load other necessary files that are not namespaced or rely on global functions
 require_once 'wirtzdata-settings.php';
-
-/**
- * Include the logging functionality
- */
 require_once 'wirtzdata-log.php';
-
+require_once 'wirtzdata-javascript-vpn.php';
 
 
 /**
- * Include VPN detection JavaScript functionality
- * 
- * Loads the wirtzdata-javascript-vpn.php file which contains code to detect
- * if users are accessing the site through a VPN connection. This helps ensure
- * proper access control and security measures.
+ * Main loader class to bootstrap plugin hooks and instantiate handlers.
  */
-include_once 'wirtzdata-javascript-vpn.php';
+class WirtzLoader
+{
+    private $wirtzShow;
+    private $nlp;
+    private $deepDive;
 
-/**
- * Handle direct path /data-deep-dive
- */
-add_action('init', function() {
-    if (parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH) === '/data-deep-dive') {
-        add_action('wp_loaded', function() {
-            global $post, $wp_query;
-            $post = (object) [
-                'ID' => 0,
-                'post_name' => 'data-deep-dive',
-                'post_title' => 'Deep Dive Data View',
-                'post_content' => '',
-                'post_type' => 'page',
-                'post_status' => 'publish',
-                'post_parent' => 0,
-                'ancestors' => []
-            ];
-            $wp_query->is_page = true;
-            $wp_query->is_singular = true;
-            $wp_query->post = $post;
-            
-            $deepDive = new StackWirtz\WordpressPlugin\WirtzDataDeepDive();
-            $content = $deepDive->deepDiveView();
-            
-            get_header();
-            echo $content;
-            get_footer();
-            exit;
-        });
+    public function __construct()
+    {
+        // Instantiate handlers. WirtzShow constructor handles its own dependencies and checks.
+        $this->wirtzShow = new WirtzShow();
+        $this->nlp = new NLP();
+        $this->deepDive = new WirtzDataDeepDive();
+        
+        $this->registerHooks();
     }
+
+    public function registerHooks()
+    {
+        // Shortcodes
+        add_shortcode('wirtzdata', [$this->wirtzShow, 'startpoint']);
+        add_shortcode('wirtzdata_listplays', [$this->wirtzShow, 'listPlaysByYear']);
+        add_shortcode('wirtzdata_test', [$this, 'handleTestShortcode']);
+        add_shortcode('wirtzdata_NLP', [$this->nlp, 'displayNLP']);
+        add_shortcode('wirtzdata_productions_by_year', [$this->wirtzShow, 'renderProductionByYearChart']);
+        
+        // Admin Notices / Redirects
+        add_action('admin_notices', [$this, 'displaySubscriberNotice']);
+        
+        // Custom Routing Setup
+        add_action('init', [$this, 'setupDeepDiveRoute']);
+    }
+
+    public function handleTestShortcode()
+    {
+        return "";
+    }
+    
+    /**
+     * Handles automatic redirection for subscribers on the admin dashboard.
+     */
+    public function displaySubscriberNotice()
+    {
+        $user = wp_get_current_user();
+
+        if ($user && in_array('subscriber', $user->roles)) {
+            $post_id = get_option('wirtz_data_stright_to_search_after_login_location');
+
+            if ($post_id > 0) {
+                $url = get_permalink($post_id);
+                
+                // Output minimal HTML/JS notice that redirects the user.
+                printf(
+                    <<<HTML
+                    <div class="notice notice-info is-dismissible" style="font-size: 32px; float: left;" >
+                        🔎 You can access the Wirtz Data search page here: <a href="%s">%s</a>
+                    </div>
+                    <script>
+                        document.addEventListener("DOMContentLoaded", function() {
+                            setTimeout(function(){
+                                window.location.replace("%s?random=" + Date.now());
+                            }, 100);
+                        });
+                    </script>
+                    HTML,
+                    esc_url($url),
+                    esc_url($url),
+                    esc_url($url)
+                );
+            }
+        }
+    }
+
+    /**
+     * Handles the /data-deep-dive request by manually simulating WP query context.
+     */
+    public function setupDeepDiveRoute()
+    {
+        // Check the path directly on 'init' to trigger content load if it matches
+        if (parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH) === '/data-deep-dive') {
+            add_action('wp_loaded', function() { // Using wp_loaded like original for context setup
+                global $post, $wp_query;
+                
+                // Manually emulate WP query context for the deep dive page
+                $post = (object) [
+                    'ID' => 0,
+                    'post_name' => 'data-deep-dive',
+                    'post_title' => 'Deep Dive Data View',
+                    'post_content' => '',
+                    'post_type' => 'page',
+                    'post_status' => 'publish',
+                    'ancestors' => []
+                ];
+                $wp_query->is_page = true;
+                $wp_query->is_singular = true;
+                $wp_query->post = $post;
+                
+                $deepDive = new WirtzDataDeepDive();
+                $content = $deepDive->deepDiveView();
+                
+                // Output content and exit, mimicking original structure
+                get_header();
+                echo $content;
+                get_footer();
+                exit;
+            });
+        }
+    }
+}
+
+// Initialize the loader on plugins_loaded to ensure all classes are available
+add_action('plugins_loaded', function() {
+    new WirtzLoader();
 });

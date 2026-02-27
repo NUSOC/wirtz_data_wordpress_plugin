@@ -66,6 +66,24 @@
         </div>
     </div>
 
+    <div class="chart-card" style="margin-bottom: 20px;">
+        <h3>Current Data File</h3>
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; text-align: center;">
+            <div>
+                <strong>File Name:</strong><br>
+                {{ fileInfo.name }}
+            </div>
+            <div>
+                <strong>Last Modified:</strong><br>
+                {{ fileInfo.modified }}
+            </div>
+            <div>
+                <strong>Total Rows:</strong><br>
+                {{ fileInfo.rowCount }}
+            </div>
+        </div>
+    </div>
+
     <div class="dashboard-grid">
         <div class="chart-card full-width">
             <h3>Productions by Year</h3>

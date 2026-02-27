@@ -224,6 +224,14 @@ class WirtzShow
             $totalProductions += count($year);
         }
 
+        // Get file information
+        $csvFile = $this->wirtz_data->latestFile();
+        $fileInfo = [
+            'name' => basename($csvFile),
+            'modified' => $this->wirtz_data->lastFileModifiedAt(),
+            'rowCount' => count($data)
+        ];
+
         return $this->twig->render(
             'dashboard.html.twig',
             [
@@ -235,7 +243,8 @@ class WirtzShow
                 'teamByYear' => $this->wirtz_data->getTeamByYear(),
                 'roleDistribution' => $this->wirtz_data->getRoleDistribution(),
                 'rolesByYear' => $this->wirtz_data->getRolesByYear(),
-                'gradByYear' => $this->wirtz_data->getGradByYear()
+                'gradByYear' => $this->wirtz_data->getGradByYear(),
+                'fileInfo' => $fileInfo
             ]
         );
     }
