@@ -309,4 +309,197 @@ class WirtzData
     {
         return $this->headers;
     }
+
+    public function getProductionCountsByYear(): array
+    {
+        $data = $this->getData();
+        $counts = [];
+
+        foreach ($data as $row) {
+            $year = $row['Year'] ?? 'Unknown';
+            $production = $row['Production'] ?? '';
+
+            if (!isset($counts[$year])) {
+                $counts[$year] = [];
+            }
+
+            if (!isset($counts[$year][$production])) {
+                $counts[$year][$production] = 0;
+            }
+
+            $counts[$year][$production]++;
+        }
+
+        ksort($counts);
+
+        return $counts;
+    }
+
+    public function getCareerDistribution(): array
+    {
+        $data = $this->getData();
+        $counts = [];
+
+        foreach ($data as $row) {
+            $career = $row['Career'] ?? 'Unknown';
+            $career = $career ?: 'Unknown';
+
+            if (!isset($counts[$career])) {
+                $counts[$career] = 0;
+            }
+            $counts[$career]++;
+        }
+
+        ksort($counts);
+        return $counts;
+    }
+
+    public function getRoleDistribution(): array
+    {
+        $data = $this->getData();
+        $counts = [];
+
+        foreach ($data as $row) {
+            $role = $row['Role'] ?? 'Unknown';
+            $role = $role ?: 'Unknown';
+
+            if (!isset($counts[$role])) {
+                $counts[$role] = 0;
+            }
+            $counts[$role]++;
+        }
+
+        arsort($counts);
+        return array_slice($counts, 0, 15, true);
+    }
+
+    public function getTeamDistribution(): array
+    {
+        $data = $this->getData();
+        $counts = [];
+
+        foreach ($data as $row) {
+            $team = $row['Team'] ?? 'Unknown';
+            $team = $team ?: 'Unknown';
+
+            if (!isset($counts[$team])) {
+                $counts[$team] = 0;
+            }
+            $counts[$team]++;
+        }
+
+        arsort($counts);
+        return $counts;
+    }
+
+    public function getGradYearDistribution(): array
+    {
+        $data = $this->getData();
+        $counts = [];
+
+        foreach ($data as $row) {
+            $grad = $row['Grad'] ?? 'Unknown';
+            $grad = $grad ?: 'Unknown';
+
+            if (!isset($counts[$grad])) {
+                $counts[$grad] = 0;
+            }
+            $counts[$grad]++;
+        }
+
+        ksort($counts);
+        return $counts;
+    }
+
+    public function getRolesByYear(): array
+    {
+        $data = $this->getData();
+        $counts = [];
+
+        foreach ($data as $row) {
+            $year = $row['Year'] ?? 'Unknown';
+            $role = $row['Role'] ?? 'Unknown';
+            $role = $role ?: 'Unknown';
+
+            if (!isset($counts[$year])) {
+                $counts[$year] = [];
+            }
+            if (!isset($counts[$year][$role])) {
+                $counts[$year][$role] = 0;
+            }
+            $counts[$year][$role]++;
+        }
+
+        ksort($counts);
+        return $counts;
+    }
+
+    public function getCareerByYear(): array
+    {
+        $data = $this->getData();
+        $counts = [];
+
+        foreach ($data as $row) {
+            $year = $row['Year'] ?? 'Unknown';
+            $career = $row['Career'] ?? 'Unknown';
+            $career = $career ?: 'Unknown';
+
+            if (!isset($counts[$year])) {
+                $counts[$year] = [];
+            }
+            if (!isset($counts[$year][$career])) {
+                $counts[$year][$career] = 0;
+            }
+            $counts[$year][$career]++;
+        }
+
+        ksort($counts);
+        return $counts;
+    }
+
+    public function getTeamByYear(): array
+    {
+        $data = $this->getData();
+        $counts = [];
+
+        foreach ($data as $row) {
+            $year = $row['Year'] ?? 'Unknown';
+            $team = $row['Team'] ?? 'Unknown';
+            $team = $team ?: 'Unknown';
+
+            if (!isset($counts[$year])) {
+                $counts[$year] = [];
+            }
+            if (!isset($counts[$year][$team])) {
+                $counts[$year][$team] = 0;
+            }
+            $counts[$year][$team]++;
+        }
+
+        ksort($counts);
+        return $counts;
+    }
+
+    public function getGradByYear(): array
+    {
+        $data = $this->getData();
+        $counts = [];
+
+        foreach ($data as $row) {
+            $year = $row['Year'] ?? 'Unknown';
+            $grad = $row['Grad'] ?? 'Unknown';
+            $grad = $grad ?: 'Unknown';
+
+            if (!isset($counts[$year])) {
+                $counts[$year] = [];
+            }
+            if (!isset($counts[$year][$grad])) {
+                $counts[$year][$grad] = 0;
+            }
+            $counts[$year][$grad]++;
+        }
+
+        ksort($counts);
+        return $counts;
+    }
 }

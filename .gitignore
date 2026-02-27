@@ -1,15 +1,41 @@
-*.php~
-debug.log
-node_modules/
-.idea/
-PyCharm30/
-venv/
-composer.lock
-build/
+# WordPress
+wp-config.php
+wp-content/uploads/
+wp-content/cache/
+wp-content/backup-db/
+wp-content/advanced-cache.php
+wp-content/wp-cache-config.php
+
+# Plugin specific
 *.log
-*~
-*.orig
+*.tmp
 .DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Composer
+/vendor/
+composer.lock
+
+# Node modules
+node_modules/
+npm-debug.log*
+
+# Environment files
 .env
-vendor/
-settings.json
+.env.local
+.env.production
+
+# Cache and temporary files
+*.cache
+/cache/
+/tmp/
+
+# AI agents
+*.md.agents
+AGENTS.md

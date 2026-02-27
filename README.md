@@ -6,6 +6,7 @@ A WordPress plugin to retrieve data from a CSV file using a shortcode.
 
 - CSV data search and display using shortcodes
 - Admin settings page with CSV file management
+- Data Dashboard with interactive Chart.js visualizations
 - Twig templating for clean UI rendering
 - VPN detection and access control
 - Automatic newest CSV file detection
@@ -20,6 +21,17 @@ The plugin includes an admin settings page accessible via **Wirtz Data Settings*
 - Set Ollama API endpoint and model
 - Configure redirect page after login
 - Manage allowed NetIDs
+
+## Data Dashboard
+
+Access interactive charts and visualizations via **Wirtz Data Settings → Data Dashboard**. The dashboard includes:
+
+- Summary statistics (total people, productions, years)
+- Productions by Year (bar chart)
+- Career Distribution (doughnut chart - UG vs Grad)
+- Team Distribution (pie chart)
+- Top Roles (horizontal bar chart)
+- Graduation Years (line chart)
 
 ## CSV File Management
 

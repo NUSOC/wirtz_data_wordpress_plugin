@@ -106,6 +106,26 @@ add_shortcode('wirtzdata_NLP', function () {
 
 
 
+/**
+ * Shortcode to display production counts by year as a chart
+ * 
+ * Uses Chart.js to display a bar chart showing the number of 
+ * productions per year from the CSV data.
+ *
+ * @return string The rendered chart template
+ */
+add_shortcode('wirtzdata_productions_by_year', function () {
+    if (!is_user_logged_in()) {
+        $login_url = wp_login_url();
+        return "Please <a href='$login_url'>login</a> to view this chart.";
+    }
+
+    $wirtzShow = new StackWirtz\WordpressPlugin\WirtzShow();
+    return $wirtzShow->renderProductionByYearChart(true);
+});
+
+
+
 
 
 

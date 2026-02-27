@@ -179,4 +179,64 @@ class WirtzShow
             ]
         );
     }
+
+    public function renderProductionByYearChart($skipChecks = false)
+    {
+        if (!is_user_logged_in()) {
+            $login_url = wp_login_url();
+            return "Please <a href='$login_url'>login</a> to view this chart.";
+        }
+
+        if (!$skipChecks && get_option('wirtz_csv_folder') == '') {
+            return "Error: No CSV folder configured. Please set it in Wirtz Data Settings.";
+        }
+
+        $productionCountsByYear = $this->wirtz_data->getProductionCountsByYear();
+
+        if (empty($productionCountsByYear)) {
+            return "No production data found. Please check your CSV file.";
+        }
+
+        return $this->twig->render(
+            'production-by-year.html.twig',
+            [
+                'productionCountsByYear' => $productionCountsByYear
+            ]
+        );
+    }
+
+    public function renderDashboard($skipChecks = false)
+    {
+        if (!is_user_logged_in()) {
+            $login_url = wp_login_url();
+            return "Please <a href='$login_url'>login</a> to view this dashboard.";
+        }
+
+        if (!$skipChecks && get_option('wirtz_csv_folder') == '') {
+            return "Error: No CSV folder configured. Please set it in Wirtz Data Settings.";
+        }
+
+        $data = $this->wirtz_data->getData();
+        $productionCountsByYear = $this->wirtz_data->getProductionCountsByYear();
+        
+        $totalProductions = 0;
+        foreach ($productionCountsByYear as $year) {
+            $totalProductions += count($year);
+        }
+
+        return $this->twig->render(
+            'dashboard.html.twig',
+            [
+                'totalPeople' => count($data),
+                'totalProductions' => $totalProductions,
+                'totalYears' => count($productionCountsByYear),
+                'productionCountsByYear' => $productionCountsByYear,
+                'careerByYear' => $this->wirtz_data->getCareerByYear(),
+                'teamByYear' => $this->wirtz_data->getTeamByYear(),
+                'roleDistribution' => $this->wirtz_data->getRoleDistribution(),
+                'rolesByYear' => $this->wirtz_data->getRolesByYear(),
+                'gradByYear' => $this->wirtz_data->getGradByYear()
+            ]
+        );
+    }
 }

@@ -1,0 +1,199 @@
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+    .dashboard-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+        gap: 20px;
+        padding: 20px;
+    }
+    .chart-card {
+        background: #fff;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        padding: 20px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .chart-card h3 {
+        margin-top: 0;
+        color: #333;
+        border-bottom: 2px solid #0073aa;
+        padding-bottom: 10px;
+    }
+    .chart-wrapper {
+        position: relative;
+        height: 350px;
+    }
+    .full-width {
+        grid-column: 1 / -1;
+    }
+    .stat-summary {
+        display: flex;
+        justify-content: space-around;
+        padding: 20px;
+        background: #f0f0f0;
+        border-radius: 8px;
+        margin-bottom: 20px;
+    }
+    .stat-box {
+        text-align: center;
+    }
+    .stat-number {
+        font-size: 32px;
+        font-weight: bold;
+        color: #0073aa;
+    }
+    .stat-label {
+        color: #666;
+    }
+</style>
+
+<div class="wirtz-dashboard">
+    <h1>Wirtz Data Dashboard</h1>
+    
+    <div class="stat-summary">
+        <div class="stat-box">
+            <div class="stat-number">{{ totalPeople }}</div>
+            <div class="stat-label">Total People</div>
+        </div>
+        <div class="stat-box">
+            <div class="stat-number">{{ totalProductions }}</div>
+            <div class="stat-label">Total Productions</div>
+        </div>
+        <div class="stat-box">
+            <div class="stat-number">{{ totalYears }}</div>
+            <div class="stat-label">Years of Data</div>
+        </div>
+    </div>
+
+    <div class="dashboard-grid">
+        <div class="chart-card full-width">
+            <h3>Productions by Year</h3>
+            <div class="chart-wrapper">
+                <canvas id="productionsByYearChart"></canvas>
+            </div>
+        </div>
+
+        <div class="chart-card full-width">
+            <h3>Career by Year</h3>
+            <div class="chart-wrapper">
+                <canvas id="careerByYearChart"></canvas>
+            </div>
+        </div>
+
+        <div class="chart-card full-width">
+            <h3>Team by Year</h3>
+            <div class="chart-wrapper">
+                <canvas id="teamByYearChart"></canvas>
+            </div>
+        </div>
+
+        <div class="chart-card full-width">
+            <h3>Top Roles by Year</h3>
+            <div class="chart-wrapper">
+                <canvas id="rolesByYearChart"></canvas>
+            </div>
+        </div>
+
+        <div class="chart-card full-width">
+            <h3>Graduation Year by Year</h3>
+            <div class="chart-wrapper">
+                <canvas id="gradByYearChart"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const colors = [
+        'rgba(54, 162, 235, 0.7)',
+        'rgba(255, 99, 132, 0.7)',
+        'rgba(75, 192, 192, 0.7)',
+        'rgba(255, 206, 86, 0.7)',
+        'rgba(153, 102, 255, 0.7)',
+        'rgba(255, 159, 64, 0.7)',
+        'rgba(199, 199, 199, 0.7)',
+        'rgba(83, 102, 255, 0.7)',
+        'rgba(40, 159, 64, 0.7)',
+        'rgba(210, 99, 132, 0.7)',
+        'rgba(120, 50, 180, 0.7)',
+        'rgba(50, 180, 120, 0.7)'
+    ];
+    const borderColors = colors.map(c => c.replace('0.7', '1'));
+
+    function createStackedBarChart(canvasId, data, topN = 10) {
+        const allYears = Object.keys(data).sort();
+        
+        const totals = {};
+        allYears.forEach(year => {
+            Object.entries(data[year]).forEach(([key, count]) => {
+                totals[key] = (totals[key] || 0) + count;
+            });
+        });
+        const topKeys = Object.entries(totals)
+            .sort((a, b) => b[1] - a[1])
+            .slice(0, topN)
+            .map(([k]) => k);
+        
+        const datasets = topKeys.map((key, i) => ({
+            label: key,
+            data: allYears.map(year => data[year][key] || 0),
+            backgroundColor: colors[i % colors.length],
+            borderColor: borderColors[i % borderColors.length],
+            borderWidth: 1
+        }));
+        
+        new Chart(document.getElementById(canvasId), {
+            type: 'bar',
+            data: { labels: allYears, datasets: datasets },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: { stacked: true },
+                    y: { stacked: true, beginAtZero: true, ticks: { stepSize: 1 } }
+                }
+            }
+        });
+    }
+
+    // Productions by Year
+    const prodData = {{ productionCountsByYear|json_encode|raw }};
+    const prodYears = Object.keys(prodData).sort();
+    const prodDatasets = prodYears.map((year, i) => ({
+        label: year,
+        data: [Object.keys(prodData[year]).length],
+        backgroundColor: colors[i % colors.length],
+        borderColor: borderColors[i % borderColors.length],
+        borderWidth: 1
+    }));
+    new Chart(document.getElementById('productionsByYearChart'), {
+        type: 'bar',
+        data: { labels: prodYears, datasets: [{
+            label: 'Productions',
+            data: prodYears.map(y => Object.keys(prodData[y]).length),
+            backgroundColor: 'rgba(54, 162, 235, 0.7)',
+            borderColor: 'rgba(54, 162, 235, 1)',
+            borderWidth: 1
+        }]},
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } }
+        }
+    });
+
+    // Career by Year
+    createStackedBarChart('careerByYearChart', {{ careerByYear|json_encode|raw }}, 5);
+
+    // Team by Year
+    createStackedBarChart('teamByYearChart', {{ teamByYear|json_encode|raw }}, 10);
+
+    // Roles by Year
+    createStackedBarChart('rolesByYearChart', {{ rolesByYear|json_encode|raw }}, 10);
+
+    // Grad by Year
+    createStackedBarChart('gradByYearChart', {{ gradByYear|json_encode|raw }}, 10);
+});
+</script>

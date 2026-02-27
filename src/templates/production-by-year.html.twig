@@ -1,0 +1,87 @@
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+    .chart-container {
+        max-width: 900px;
+        margin: 20px auto;
+        padding: 20px;
+        background: #fff;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+    }
+    .chart-title {
+        text-align: center;
+        margin-bottom: 20px;
+        color: #333;
+    }
+    .chart-wrapper {
+        position: relative;
+        height: 400px;
+    }
+</style>
+
+<div class="chart-container">
+    <h2 class="chart-title">Number of Productions by Year</h2>
+    <div class="chart-wrapper">
+        <canvas id="productionByYearChart"></canvas>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const productionData = {{ productionCountsByYear|json_encode|raw }};
+    
+    const years = Object.keys(productionData).sort();
+    const productionCounts = years.map(year => Object.keys(productionData[year]).length);
+    
+    const ctx = document.getElementById('productionByYearChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: years,
+            datasets: [{
+                label: 'Number of Productions',
+                data: productionCounts,
+                backgroundColor: 'rgba(54, 162, 235, 0.7)',
+                borderColor: 'rgba(54, 162, 235, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: true,
+                    position: 'top'
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            return context.parsed.y + ' productions';
+                        }
+                    }
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        stepSize: 1
+                    },
+                    title: {
+                        display: true,
+                        text: 'Number of Productions'
+                    }
+                },
+                x: {
+                    title: {
+                        display: true,
+                        text: 'Year'
+                    }
+                }
+            }
+        }
+    });
+});
+</script>

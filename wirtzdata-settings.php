@@ -16,6 +16,26 @@ function wirtz_data_settings_page()
     );
 }
 add_action('admin_menu', 'wirtz_data_settings_page');
+add_action('admin_menu', 'wirtz_data_dashboard_page');
+
+function wirtz_data_dashboard_page()
+{
+    add_submenu_page(
+        'wirtz-data-settings',
+        'Data Dashboard',
+        'Data Dashboard',
+        'read',
+        'wirtz-data-dashboard',
+        'wirtz_data_dashboard_html'
+    );
+}
+
+function wirtz_data_dashboard_html()
+{
+    require_once __DIR__ . '/vendor/autoload.php';
+    $wirtzShow = new StackWirtz\WordpressPlugin\WirtzShow();
+    echo $wirtzShow->renderDashboard(true);
+}
 
 // Display the settings page content
 function wirtz_data_settings_html()
