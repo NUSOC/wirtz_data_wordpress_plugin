@@ -27,6 +27,7 @@ The plugin includes an admin settings page accessible via **Wirtz Data Settings*
 Access interactive charts and visualizations via **Wirtz Data Settings → Data Dashboard**. The dashboard includes:
 
 - Summary statistics (total people, productions, years)
+- Current data file information (name, last modified, row count)
 - Productions by Year (bar chart)
 - Career Distribution (doughnut chart - UG vs Grad)
 - Team Distribution (pie chart)
