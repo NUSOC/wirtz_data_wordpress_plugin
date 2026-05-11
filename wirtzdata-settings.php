@@ -88,8 +88,6 @@ function wirtz_data_settings_register()
 {
     // Register settings
     register_setting('wirtz-data-group', 'wirtz_csv_folder');
-    register_setting('wirtz-data-group', 'ollama_api_endpoint');
-    register_setting('wirtz-data-group', 'ollama_model');
     register_setting('wirtz-data-group', 'wirtz_data_stright_to_search_after_login_location');
     register_setting('wirtz-data-group', 'wirtz_allowed_netids');
 
@@ -114,22 +112,6 @@ function wirtz_data_settings_register()
         'wirtz_csv_files_list',
         'Current Files in CSV Folder',
         'display_wirtz_csv_files_list',
-        'wirtz-data-settings',
-        'wirtz-data-group'
-    );
-    
-    add_settings_field(
-        'ollama_api_endpoint',
-        'Ollama API Endpoint',
-        'display_ollama_api_endpoint',
-        'wirtz-data-settings',
-        'wirtz-data-group'
-    );
-    
-    add_settings_field(
-        'ollama_model',
-        'Ollama Model',
-        'display_ollama_model',
         'wirtz-data-settings',
         'wirtz-data-group'
     );
@@ -189,36 +171,6 @@ function display_wirtz_csv_files_list()
  * 
  * This function creates a text input field that allows administrators to specify
  * the Ollama API endpoint URL. The default value is http://localhost:11434/api/generate.
- *
- * @since 1.0.0
- * @return void
- */
-function display_ollama_api_endpoint()
-{
-    $value = get_option('ollama_api_endpoint', 'http://localhost:11434/api/generate');
-    echo '<input type="text" name="ollama_api_endpoint" value="' . esc_attr($value) . '" size="50"/>';
-}
-
-/**
- * Displays the input field for Ollama model setting
- * 
- * This function creates a text input field that allows administrators to specify
- * the Ollama model to use. The default value is llama3.
- *
- * @since 1.0.0
- * @return void
- */
-function display_ollama_model()
-{
-    $value = get_option('ollama_model', 'llama3');
-    echo '<input type="text" name="ollama_model" value="' . esc_attr($value) . '" size="50"/>';
-}
-
-/**
- * Displays a dropdown to select a page or post for redirection after login
- * 
- * This function creates a dropdown that allows administrators to select
- * a page or post where users will be redirected after login.
  *
  * @since 1.0.0
  * @return void
