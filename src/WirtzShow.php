@@ -116,9 +116,9 @@ class WirtzShow
         } 
 
 
-        dump($people);
+ 
 
-
+        dump(WIRTZ_PLUGIN_URL);
 
 
         return $this->twig->render(
@@ -135,6 +135,7 @@ class WirtzShow
                 'people' => $people ?? [],
                 '_get' => array_map('sanitize_text_field', $_GET ?? []),
                 'returnPage' => $currentUrl = $_SERVER['REQUEST_URI'],
+                'pluginroot' => WIRTZ_PLUGIN_URL,
             ]
         );
     }

@@ -28,6 +28,10 @@ require_once 'wirtzdata-log.php';
 require_once 'wirtzdata-javascript-vpn.php';
 
 
+
+define('WIRTZ_PLUGIN_PATH', plugin_dir_path(__FILE__));
+define('WIRTZ_PLUGIN_URL', plugin_dir_url(__FILE__));
+
 /**
  * Main loader class to bootstrap plugin hooks and instantiate handlers.
  */
@@ -37,12 +41,15 @@ class WirtzLoader
     private $nlp;
     private $deepDive;
 
+
     public function __construct()
     {
         // Instantiate handlers. WirtzShow constructor handles its own dependencies and checks.
         $this->wirtzShow = new WirtzShow();
         $this->nlp = new NLP();
         $this->deepDive = new WirtzDataDeepDive();
+
+       
         
         $this->registerHooks();
     }

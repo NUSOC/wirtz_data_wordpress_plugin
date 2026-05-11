@@ -122,6 +122,7 @@
                 <th>Career</th>
                 <th>Year</th>
                 <th>Prod</th>
+                <th>PDF</th>
             </tr>
         </thead>
         <tbody>
@@ -190,6 +191,13 @@
                     {% endif %}
                 </td>
 
+                <td align=center>
+                    {% if person["Program PDF"] %}
+                    <a href="{{ person['Program PDF'] }}" target="_blank"> 
+                        <img src="{{ pluginroot }}/src/templates/img/pdf.png" alt="PDF icon"/>                    {% else %}
+                     
+                    {% endif %}
+                </td>
 
             </tr>
             {% endfor %}
