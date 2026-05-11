@@ -73,6 +73,8 @@ class WirtzShow
     }
 
     /**
+     * [wirtzdata] shortcode basically
+     * 
      * Handles the main search functionality for people
      * 
      * Checks user authentication, processes search parameters for first/last names,
@@ -112,6 +114,9 @@ class WirtzShow
                 $grad
             );
         } 
+
+
+        dump($people);
 
 
 
@@ -163,6 +168,7 @@ class WirtzShow
         } else {
             $plays = [];
         }
+
 
         // return to the template
         return $this->twig->render(
