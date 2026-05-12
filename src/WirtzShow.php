@@ -118,7 +118,7 @@ class WirtzShow
 
  
 
-        dump(WIRTZ_PLUGIN_URL);
+        //dump(WIRTZ_PLUGIN_URL);
 
 
         return $this->twig->render(
